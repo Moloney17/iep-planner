@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@media print {
+  nav, footer, .no-print { display: none !important; }
+  .print-break { page-break-before: always; }
+  body { background: white; }
+  .print-show { display: block !important; }
+}
