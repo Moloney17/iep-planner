@@ -25,8 +25,8 @@ export default function HomePage() {
   const initials = (name: string) =>
     name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 
-  const grades = [...new Set(students.map(s => s.grade))].sort();
-  const categories = [...new Set(students.map(s => s.disabilityCategory))].sort();
+  const grades = Array.from(new Set(students.map(s => s.grade))).sort();
+const categories = Array.from(new Set(students.map(s => s.disabilityCategory))).sort();
 
   const filtered = students.filter(s => {
     const q = search.toLowerCase();
