@@ -4,8 +4,7 @@ export default function LandingPage() {
   return (
     <div className="landing-root">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
-
+        
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         .landing-root {
