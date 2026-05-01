@@ -29,6 +29,12 @@ export default function SignupPage() {
       options: { data: { full_name: name } }
     });
     if (error) { setError(error.message); setLoading(false); return; }
+    // Notify admin of new signup
+    fetch('/api/notify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'new_user', data: { name } }),
+    }).catch(() => {});
     setSuccess(true);
     setTimeout(() => router.push('/auth/login'), 3000);
   };

@@ -231,6 +231,14 @@ Return this exact JSON structure (no other text):
     }
 
     iepData.generatedAt = new Date().toISOString();
+    // Fire-and-forget admin notification
+    const baseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ? 'https://www.smartiep.co' : 'http://localhost:3000';
+    fetch(`${baseUrl}/api/notify`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Cookie': request.headers.get('cookie') || '' },
+      body: JSON.stringify({ type: 'iep_generated', data: { studentName: student.name, grade: student.grade, disability: student.disabilityCategory } }),
+    }).catch(() => {});
+
 
     const res = NextResponse.json(iepData);
     res.headers.set('X-RateLimit-Remaining', String(remaining));
