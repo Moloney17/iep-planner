@@ -4,8 +4,11 @@ import './globals.css';
 import NavBar from '@/components/NavBar';
 
 export const metadata: Metadata = {
-  title: 'IEP Planner — Early Education Support',
-  description: 'AI-assisted IEP planning tool for early education teachers, IDEA 2004 compliant.',
+  title: 'SmartIEP — AI-Assisted IEP Planning',
+  description: 'AI-assisted IEP planning tool for special education teachers. Generate IDEA 2004 compliant IEP drafts in minutes.',
+  icons: {
+    icon: 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💡</text></svg>',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
