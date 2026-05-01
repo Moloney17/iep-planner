@@ -23,18 +23,20 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  const isAuthPage = request.nextUrl.pathname.startsWith('/auth');
-  const isApiRoute = request.nextUrl.pathname.startsWith('/api');
-  const isPublic = isAuthPage || isApiRoute;
+  const path = request.nextUrl.pathname;
+  const isAuthPage = path.startsWith('/auth');
+  const isApiRoute = path.startsWith('/api');
+  const isLanding = path === '/landing' || path === '/';
+  const isPublic = isAuthPage || isApiRoute || isLanding;
 
-  // Redirect unauthenticated users to login
+  // Unauthenticated users: allow landing + auth pages, redirect everything else to landing
   if (!user && !isPublic) {
-    return NextResponse.redirect(new URL('/auth/login', request.url));
+    return NextResponse.redirect(new URL('/landing', request.url));
   }
 
-  // Redirect logged-in users away from auth pages
-  if (user && isAuthPage) {
-    return NextResponse.redirect(new URL('/', request.url));
+  // Authenticated users: redirect away from auth pages and landing to dashboard
+  if (user && (isAuthPage || isLanding)) {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
   return supabaseResponse;
