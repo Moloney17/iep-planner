@@ -26,8 +26,9 @@ export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const isAuthPage = path.startsWith('/auth');
   const isApiRoute = path.startsWith('/api');
-  const isLanding = path === '/landing' || path === '/';
-  const isPublic = isAuthPage || isApiRoute || isLanding;
+  const isLanding = path === "/landing" || path === "/";
+  const isLegal = path.startsWith("/legal");
+  const isPublic = isAuthPage || isApiRoute || isLanding || isLegal;
 
   // Unauthenticated users: allow landing + auth pages, redirect everything else to landing
   if (!user && !isPublic) {

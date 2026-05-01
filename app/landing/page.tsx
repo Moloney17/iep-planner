@@ -440,7 +440,8 @@ export default function LandingPage() {
       {/* TESTIMONIALS */}
       <section className="testimonials-section" id="testimonials">
         <div className="section-label">Teacher Reviews</div>
-        <h2 className="section-h2">What educators are saying:</h2>
+        <h2 className="section-h2">What educators are saying.</h2>
+        <p className="section-sub">Placeholder testimonials — real reviews from your early users will go here.</p>
         <div className="testimonials-grid">
           {[
             { quote: "I used to spend my entire Sunday writing IEPs. With SmartIEP, I have a solid draft done before lunch on Friday. The goals it generates are specific, measurable, and actually match what I wrote in the present levels.", name: 'Sarah L.', role: 'Special Education Teacher · K-2', initials: 'SL', bg: '#e8f0fb', color: '#2a6fad', badge: 'Verified Teacher' },
@@ -505,6 +506,9 @@ export default function LandingPage() {
           <Link href="/auth/login" className="footer-link">Sign In</Link>
           <Link href="/auth/signup" className="footer-link">Create Account</Link>
           <a href="mailto:hello@smartiep.co" className="footer-link">Contact</a>
+          <Link href="/legal/privacy" className="footer-link">Privacy</Link>
+          <Link href="/legal/terms" className="footer-link">Terms</Link>
+          <Link href="/legal/ferpa" className="footer-link">FERPA</Link>
         </div>
         <div className="footer-copy">© {new Date().getFullYear()} SmartIEP. All rights reserved.</div>
       </footer>

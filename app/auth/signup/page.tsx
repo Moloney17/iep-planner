@@ -11,6 +11,7 @@ export default function SignupPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [name, setName] = useState('');
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -18,6 +19,7 @@ export default function SignupPage() {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    if (!agreedToTerms) { setError('Please agree to the Terms of Service and Privacy Policy to continue.'); return; }
     if (password !== confirmPassword) { setError('Passwords do not match.'); return; }
     if (password.length < 8) { setError('Password must be at least 8 characters.'); return; }
     setLoading(true);
@@ -46,7 +48,10 @@ export default function SignupPage() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="text-5xl mb-3">📋</div>
+          <Link href="/landing" className="inline-flex items-center gap-2 mb-6">
+            <div className="w-10 h-10 bg-blue-700 rounded-lg flex items-center justify-center text-xl">📋</div>
+            <span className="text-xl font-bold text-gray-900">SmartIEP</span>
+          </Link>
           <h1 className="text-2xl font-bold text-gray-900">Create your account</h1>
           <p className="text-gray-500 mt-1">Start planning IEPs with AI assistance</p>
         </div>
@@ -83,6 +88,18 @@ export default function SignupPage() {
                 placeholder="••••••••" />
             </div>
 
+            <div className="flex items-start gap-3 pt-1">
+              <input type="checkbox" id="terms" checked={agreedToTerms} onChange={e => setAgreedToTerms(e.target.checked)}
+                className="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
+              <label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer leading-relaxed">
+                I agree to the{' '}
+                <Link href="/legal/terms" target="_blank" className="text-blue-600 hover:underline">Terms of Service</Link>
+                {' '}and{' '}
+                <Link href="/legal/privacy" target="_blank" className="text-blue-600 hover:underline">Privacy Policy</Link>.
+                {' '}I understand that all AI-generated IEP content must be reviewed by qualified professionals before use.
+              </label>
+            </div>
+
             <button type="submit" disabled={loading}
               className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-semibold py-2.5 rounded-lg transition-colors">
               {loading ? 'Creating account...' : 'Create Account'}
@@ -93,6 +110,12 @@ export default function SignupPage() {
             Already have an account?{' '}
             <Link href="/auth/login" className="text-blue-600 font-medium hover:underline">Sign in</Link>
           </p>
+        </div>
+
+        <div className="text-center mt-6 flex justify-center gap-4 text-xs text-gray-400">
+          <Link href="/legal/privacy" className="hover:text-gray-600">Privacy Policy</Link>
+          <Link href="/legal/terms" className="hover:text-gray-600">Terms of Service</Link>
+          <Link href="/legal/ferpa" className="hover:text-gray-600">FERPA Notice</Link>
         </div>
       </div>
     </div>
