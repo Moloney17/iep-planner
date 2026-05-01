@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 
 export default function LandingPage() {
@@ -5,6 +7,7 @@ export default function LandingPage() {
     <div className="landing-root">
       <style>{`
         
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         .landing-root {
@@ -439,7 +442,9 @@ export default function LandingPage() {
       {/* TESTIMONIALS */}
       <section className="testimonials-section" id="testimonials">
         <div className="section-label">Teacher Reviews</div>
-        <h2 className="section-h2">What educators are saying:</h2>
+        <h2 className="section-h2">What educators are saying.</h2>
+        <p className="section-sub">Placeholder testimonials — real reviews from your early users will go here.</p>
+        <div className="testimonials-grid">
           {[
             { quote: "I used to spend my entire Sunday writing IEPs. With SmartIEP, I have a solid draft done before lunch on Friday. The goals it generates are specific, measurable, and actually match what I wrote in the present levels.", name: 'Sarah L.', role: 'Special Education Teacher · K-2', initials: 'SL', bg: '#e8f0fb', color: '#2a6fad', badge: 'Verified Teacher' },
             { quote: "As a special ed coordinator managing a team of 12 teachers, this tool has been transformational. New teachers especially — they no longer feel paralyzed by the blank IEP form. The AI gives them a framework they can build on.", name: 'Marcus R.', role: 'Special Ed Coordinator · Elementary', initials: 'MR', bg: '#e1f5ee', color: '#0f6e56', badge: 'Administrator' },
