@@ -443,7 +443,6 @@ export default function LandingPage() {
       <section className="testimonials-section" id="testimonials">
         <div className="section-label">Teacher Reviews</div>
         <h2 className="section-h2">What educators are saying.</h2>
-        <p className="section-sub">Placeholder testimonials — real reviews from your early users will go here.</p>
         <div className="testimonials-grid">
           {[
             { quote: "I used to spend my entire Sunday writing IEPs. With SmartIEP, I have a solid draft done before lunch on Friday. The goals it generates are specific, measurable, and actually match what I wrote in the present levels.", name: 'Sarah L.', role: 'Special Education Teacher · K-2', initials: 'SL', bg: '#e8f0fb', color: '#2a6fad', badge: 'Verified Teacher' },
