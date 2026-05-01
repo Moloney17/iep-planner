@@ -93,10 +93,10 @@ export default function StudentPage() {
           </div>
           <div className="flex gap-2 no-print flex-wrap justify-end">
             <button onClick={() => window.print()} className="text-sm text-gray-600 hover:bg-gray-100 border border-gray-200 px-3 py-2 rounded-lg transition-colors">🖨️ Print</button>
-            {displayedIEP && <button onClick={handleExport} disabled={isExporting} className="text-sm text-green-700 hover:bg-green-50 border border-green-200 px-3 py-2 rounded-lg transition-colors disabled:opacity-50">{isExporting ? '⏳...' : '⬇️ Export'}</button>}
+            {displayedIEP && (<><button onClick={handleExport} disabled={isExporting} className="text-sm text-green-700 hover:bg-green-50 border border-green-200 px-3 py-2 rounded-lg transition-colors disabled:opacity-50">{isExporting ? '⏳...' : '⬇️ Export'}</button><a href={`/students/${id}/pdf`} target="_blank" className="text-sm text-purple-700 hover:bg-purple-50 border border-purple-200 px-3 py-2 rounded-lg transition-colors">📄 PDF</a></>)}
             <Link href={`/students/${id}/edit`} className="text-sm text-blue-600 hover:bg-blue-50 border border-blue-200 px-3 py-2 rounded-lg transition-colors">✏️ Edit Info</Link>
             {student.generatedIEP && <button onClick={() => generateIEP(true)} disabled={isRegenerating} className="text-sm text-orange-600 hover:bg-orange-50 border border-orange-200 px-3 py-2 rounded-lg transition-colors disabled:opacity-50">{isRegenerating ? '⏳...' : '🔄 Regenerate'}</button>}
-            <Link href="/" className="text-sm text-gray-500 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors">← Students</Link>
+            <Link href="/dashboard" className="text-sm text-gray-500 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors">← Students</Link>
           </div>
         </div>
       </div>
