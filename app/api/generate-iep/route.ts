@@ -1,10 +1,58 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { NextRequest, NextResponse } from 'next/server';
 import { Student } from '@/lib/types';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 
 export const maxDuration = 120;
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+// --- Rate limiting using a simple in-memory store ---
+// For production scale, swap this for Redis/Upstash
+const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
+
+const DAILY_LIMIT = 5;        // max IEP generations per user per day
+const MINUTE_LIMIT = 3;       // max requests per IP per minute
+const minuteStore = new Map<string, { count: number; resetAt: number }>();
+
+function checkDailyLimit(userId: string): { allowed: boolean; remaining: number } {
+  const now = Date.now();
+  const midnight = new Date();
+  midnight.setHours(24, 0, 0, 0);
+  const resetAt = midnight.getTime();
+
+  const entry = rateLimitStore.get(userId);
+  if (!entry || now > entry.resetAt) {
+    rateLimitStore.set(userId, { count: 1, resetAt });
+    return { allowed: true, remaining: DAILY_LIMIT - 1 };
+  }
+  if (entry.count >= DAILY_LIMIT) {
+    return { allowed: false, remaining: 0 };
+  }
+  entry.count++;
+  return { allowed: true, remaining: DAILY_LIMIT - entry.count };
+}
+
+function checkMinuteLimit(ip: string): boolean {
+  const now = Date.now();
+  const resetAt = now + 60_000;
+  const entry = minuteStore.get(ip);
+  if (!entry || now > entry.resetAt) {
+    minuteStore.set(ip, { count: 1, resetAt });
+    return true;
+  }
+  if (entry.count >= MINUTE_LIMIT) return false;
+  entry.count++;
+  return true;
+}
+
+// Clean up old entries every hour to prevent memory leak
+setInterval(() => {
+  const now = Date.now();
+  rateLimitStore.forEach((v, k) => { if (now > v.resetAt) rateLimitStore.delete(k); });
+  minuteStore.forEach((v, k) => { if (now > v.resetAt) minuteStore.delete(k); });
+}, 3_600_000);
 
 const SYSTEM_PROMPT = `You are an expert special education coordinator certified in early childhood special education (ECSE) with deep expertise in IDEA 2004 compliance. You create legally sound, educationally meaningful IEPs for children ages 3–8.
 
@@ -42,6 +90,43 @@ IMPORTANT: Use person-first language. Be specific and data-driven. Reflect famil
 
 export async function POST(request: NextRequest) {
   try {
+    // --- IP-based minute rate limit ---
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+    if (!checkMinuteLimit(ip)) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please wait a moment before trying again.' },
+        { status: 429 }
+      );
+    }
+
+    // --- Auth check + daily per-user rate limit ---
+    const cookieStore = await cookies();
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() { return cookieStore.getAll(); },
+          setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
+            cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
+          },
+        },
+      }
+    );
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: 'Authentication required.' }, { status: 401 });
+    }
+
+    const { allowed, remaining } = checkDailyLimit(user.id);
+    if (!allowed) {
+      return NextResponse.json(
+        { error: `You've reached your daily limit of ${DAILY_LIMIT} IEP generations. Your limit resets at midnight. Please try again tomorrow.` },
+        { status: 429 }
+      );
+    }
+
     const student: Student = await request.json();
 
     const filledDomains = [
@@ -57,7 +142,6 @@ export async function POST(request: NextRequest) {
 STUDENT INFORMATION:
 - Name: ${student.name}
 - Date of Birth: ${student.dateOfBirth}
-- Age: calculated from DOB
 - Grade/Level: ${student.grade}
 - IDEA Disability Category: ${student.disabilityCategory}
 - IEP Meeting Date: ${student.meetingDate || 'To be determined'}
@@ -80,45 +164,37 @@ Identified areas needing goals: ${filledDomains.join(', ')}
 
 Return this exact JSON structure (no other text):
 {
-  "plaafp": "Comprehensive PLAAFP narrative in 3-5 paragraphs. Cover all assessed domains. Include specific data from present levels. Explain how the disability affects participation in general education. Reference family priorities.",
+  "plaafp": "Comprehensive PLAAFP narrative in 3-5 paragraphs.",
   "goals": [
     {
-      "domain": "Exact domain name from: Cognitive/Academic, Communication/Language, Social-Emotional, Adaptive/Self-Help, Physical/Motor",
-      "goalStatement": "Full SMART goal using the format: Given [conditions], [student name] will [observable behavior] with [measurable criteria] as measured by [method], by [timeframe].",
-      "benchmarks": [
-        "Benchmark 1 — intermediate step toward the annual goal",
-        "Benchmark 2 — intermediate step toward the annual goal",
-        "Benchmark 3 — intermediate step toward the annual goal"
-      ],
-      "successCriteria": "Specific, measurable criteria for goal mastery",
-      "timeframe": "By annual review date or specific month"
+      "domain": "Exact domain name",
+      "goalStatement": "Full SMART goal",
+      "benchmarks": ["Benchmark 1", "Benchmark 2", "Benchmark 3"],
+      "successCriteria": "Specific measurable criteria",
+      "timeframe": "By annual review date"
     }
   ],
   "services": [
     {
-      "serviceType": "Full service name (e.g., Special Education — Resource Support, Speech-Language Therapy, Occupational Therapy)",
+      "serviceType": "Full service name",
       "frequency": "X times per week",
       "duration": "X minutes per session",
-      "setting": "Setting description (e.g., general education classroom, resource room, therapy room)",
-      "provider": "Provider title (e.g., Special Education Teacher, Speech-Language Pathologist)"
+      "setting": "Setting description",
+      "provider": "Provider title"
     }
   ],
-  "accommodations": [
-    "Specific accommodation description"
-  ],
-  "assessmentAccommodations": [
-    "Specific assessment accommodation"
-  ],
+  "accommodations": ["Specific accommodation"],
+  "assessmentAccommodations": ["Specific assessment accommodation"],
   "progressMonitoring": [
     {
       "goalDomain": "Domain name",
-      "dataCollectionMethod": "Specific method (e.g., weekly probes, observation checklists, work samples)",
-      "frequency": "Daily / Weekly / Bi-weekly / Monthly",
-      "responsibleParty": "Role/title of person responsible",
-      "reportingSchedule": "Quarterly progress reports / With report cards / Monthly"
+      "dataCollectionMethod": "Specific method",
+      "frequency": "Weekly",
+      "responsibleParty": "Role/title",
+      "reportingSchedule": "Quarterly"
     }
   ],
-  "lreStatement": "Explanation of the extent to which the student will participate with non-disabled peers and justification for any pull-out services."
+  "lreStatement": "LRE justification"
 }`;
 
     const response = await client.messages.create({
@@ -128,19 +204,16 @@ Return this exact JSON structure (no other text):
       messages: [{ role: 'user', content: prompt }],
     });
 
-    // Check if response was cut off before completing
     if (response.stop_reason === 'max_tokens') {
-      throw new Error('Response was too long to complete. Try filling in fewer domain fields at once, or contact support.');
+      throw new Error('Response was too long to complete. Try filling in fewer domain fields at once.');
     }
 
     const textBlock = response.content.find(b => b.type === 'text');
     if (!textBlock || textBlock.type !== 'text') {
-      throw new Error(`Unexpected response format from Claude (stop_reason: ${response.stop_reason}). Please try again.`);
+      throw new Error('Unexpected response format from Claude. Please try again.');
     }
 
     let rawText = textBlock.text.trim();
-
-    // Strip markdown code fences if present (```json ... ``` or ``` ... ```)
     const fenceMatch = rawText.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/);
     if (fenceMatch) rawText = fenceMatch[1];
 
@@ -148,23 +221,21 @@ Return this exact JSON structure (no other text):
     try {
       iepData = JSON.parse(rawText);
     } catch {
-      // Last resort: find the outermost { ... } block
       const match = rawText.match(/\{[\s\S]*\}/);
       if (match) {
-        try {
-          iepData = JSON.parse(match[0]);
-        } catch {
-          console.error('Raw Claude response:', rawText.slice(0, 500));
-          throw new Error('Claude returned invalid JSON. Please try again — this is usually a one-time issue.');
-        }
+        try { iepData = JSON.parse(match[0]); }
+        catch { throw new Error('Claude returned invalid JSON. Please try again.'); }
       } else {
-        console.error('Raw Claude response:', rawText.slice(0, 500));
         throw new Error('Claude did not return the expected format. Please try again.');
       }
     }
 
     iepData.generatedAt = new Date().toISOString();
-    return NextResponse.json(iepData);
+
+    const res = NextResponse.json(iepData);
+    res.headers.set('X-RateLimit-Remaining', String(remaining));
+    return res;
+
   } catch (error) {
     console.error('IEP generation error:', error);
     return NextResponse.json(
