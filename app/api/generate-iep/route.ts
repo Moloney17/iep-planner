@@ -236,7 +236,7 @@ Return this exact JSON structure (no other text):
     fetch(`${baseUrl}/api/notify`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Cookie': request.headers.get('cookie') || '' },
-      body: JSON.stringify({ type: 'iep_generated', data: { studentName: student.name, grade: student.grade, disability: student.disabilityCategory } }),
+      body: JSON.stringify({ type: 'iep_generated', data: { studentName: student.name, grade: student.grade, disability: student.disabilityCategory, studentId: student.id } }),
     }).catch(() => {});
 
 
