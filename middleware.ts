@@ -28,6 +28,7 @@ export async function middleware(request: NextRequest) {
   const isApiRoute = path.startsWith('/api');
   const isLanding = path === "/landing" || path === "/";
   const isLegal = path.startsWith("/legal");
+  const isDashboardArea = path.startsWith("/dashboard") || path.startsWith("/students") || path.startsWith("/onboarding") || path.startsWith("/archived");
   const isPublic = isAuthPage || isApiRoute || isLanding || isLegal;
 
   // Unauthenticated users: allow landing + auth pages, redirect everything else to landing
@@ -36,7 +37,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Authenticated users: redirect away from auth pages and landing to dashboard
-  if (user && (isAuthPage || isLanding)) {
+  if (user && (isAuthPage || isLanding) && !isDashboardArea) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Student } from '@/lib/types';
-import { getStudents, deleteStudent, calculateAge } from '@/lib/storage';
+import { getStudents, archiveStudent, calculateAge } from '@/lib/storage';
 
 export default function HomePage() {
   const [students, setStudents] = useState<Student[]>([]);
@@ -16,9 +16,9 @@ export default function HomePage() {
     getStudents().then(s => { setStudents(s); setLoaded(true); });
   }, []);
 
-  const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Delete ${name}'s IEP record? This cannot be undone.`)) return;
-    await deleteStudent(id);
+  const handleArchive = async (id: string, name: string) => {
+    if (!confirm(`Archive ${name}? They will be hidden from your roster but their IEP records will be preserved.`)) return;
+    await archiveStudent(id);
     setStudents(await getStudents());
   };
 
@@ -57,9 +57,17 @@ export default function HomePage() {
             {hasFilters && filtered.length !== students.length && ` · ${filtered.length} shown`}
           </p>
         </div>
-        <Link href="/students/new" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-5 rounded-lg flex items-center gap-2 transition-colors shadow-sm">
-          <span className="text-lg">+</span> Add Student
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link href="/archived" className="text-sm text-gray-500 hover:text-gray-800 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors">
+            📦 Archived
+          </Link>
+          <Link href="/onboarding" className="text-sm text-gray-500 hover:text-gray-800 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors">
+            ❓ Help
+          </Link>
+          <Link href="/students/new" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-5 rounded-lg flex items-center gap-2 transition-colors shadow-sm">
+            <span className="text-lg">+</span> Add Student
+          </Link>
+        </div>
       </div>
 
       {students.length > 0 && (
@@ -83,7 +91,10 @@ export default function HomePage() {
           <div className="text-6xl mb-4">📚</div>
           <h3 className="text-xl font-semibold text-gray-700">No students yet</h3>
           <p className="text-gray-500 mt-2 max-w-sm mx-auto">Add a student to start generating customized, IDEA-compliant IEP plans.</p>
-          <Link href="/students/new" className="mt-6 inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded-lg transition-colors">Add First Student</Link>
+          <div className="flex gap-3 justify-center mt-6 flex-wrap">
+            <Link href="/students/new" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded-lg transition-colors">Add First Student</Link>
+            <Link href="/onboarding" className="border border-gray-200 hover:bg-gray-50 text-gray-600 font-semibold py-2.5 px-6 rounded-lg transition-colors">How it works →</Link>
+          </div>
         </div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
@@ -113,7 +124,7 @@ export default function HomePage() {
               <div className="flex items-center gap-2 shrink-0">
                 <Link href={`/students/${s.id}/edit`} className="text-gray-500 hover:text-blue-600 hover:bg-blue-50 p-2 rounded-lg transition-colors text-sm" title="Edit student">✏️</Link>
                 <Link href={`/students/${s.id}`} className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">{s.generatedIEP ? 'View IEP' : 'Generate IEP'}</Link>
-                <button onClick={() => handleDelete(s.id, s.name)} className="text-gray-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors" title="Delete student">🗑️</button>
+                <button onClick={() => handleArchive(s.id, s.name)} className="text-gray-400 hover:text-amber-600 hover:bg-amber-50 p-2 rounded-lg transition-colors" title="Archive student">📦</button>
               </div>
             </div>
           ))}

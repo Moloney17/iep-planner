@@ -24,6 +24,8 @@ function rowToStudent(row: Record<string, unknown>): Student {
     environmentalFactors: (row.environmental_factors as string) || '',
     generatedIEP: row.generated_iep as Student['generatedIEP'] || undefined,
     iepHistory: (row.iep_history as Student['iepHistory']) || [],
+    archived: (row.archived as boolean) || false,
+    archivedAt: (row.archived_at as string) || undefined,
     createdAt: row.created_at as string,
     updatedAt: row.updated_at as string,
   };
@@ -51,6 +53,8 @@ function studentToRow(student: Student, userId: string) {
     environmental_factors: student.environmentalFactors || null,
     generated_iep: student.generatedIEP || null,
     iep_history: student.iepHistory || [],
+    archived: student.archived || false,
+    archived_at: student.archivedAt || null,
     updated_at: new Date().toISOString(),
   };
 }
@@ -60,6 +64,7 @@ export async function getStudents(): Promise<Student[]> {
   const { data, error } = await supabase
     .from('students')
     .select('*')
+    .or('archived.is.null,archived.eq.false')
     .order('created_at', { ascending: false });
   if (error) { console.error('getStudents error:', error); return []; }
   return (data || []).map(rowToStudent);
@@ -95,6 +100,36 @@ export async function deleteStudent(id: string): Promise<void> {
     .delete()
     .eq('id', id);
   if (error) { console.error('deleteStudent error:', error); throw error; }
+}
+
+
+export async function archiveStudent(id: string): Promise<void> {
+  const supabase = createClient();
+  const { error } = await supabase
+    .from('students')
+    .update({ archived: true, archived_at: new Date().toISOString(), updated_at: new Date().toISOString() })
+    .eq('id', id);
+  if (error) { console.error('archiveStudent error:', error); throw error; }
+}
+
+export async function unarchiveStudent(id: string): Promise<void> {
+  const supabase = createClient();
+  const { error } = await supabase
+    .from('students')
+    .update({ archived: false, archived_at: null, updated_at: new Date().toISOString() })
+    .eq('id', id);
+  if (error) { console.error('unarchiveStudent error:', error); throw error; }
+}
+
+export async function getArchivedStudents(): Promise<Student[]> {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from('students')
+    .select('*')
+    .eq('archived', true)
+    .order('archived_at', { ascending: false });
+  if (error) { console.error('getArchivedStudents error:', error); return []; }
+  return (data || []).map(rowToStudent);
 }
 
 export function generateId(): string {

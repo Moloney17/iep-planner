@@ -74,6 +74,8 @@ export interface Student {
   currentServices: string;
   environmentalFactors: string;
   generatedIEP?: GeneratedIEP;
+  archived?: boolean;
+  archivedAt?: string;
   iepHistory?: GeneratedIEP[];
   createdAt: string;
   updatedAt: string;
