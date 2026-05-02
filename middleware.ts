@@ -29,7 +29,7 @@ export async function middleware(request: NextRequest) {
   const isLanding = path === "/landing" || path === "/";
   const isLegal = path.startsWith("/legal");
   const isDashboardArea = path.startsWith("/dashboard") || path.startsWith("/students") || path.startsWith("/onboarding") || path.startsWith("/archived");
-  const isPublic = isAuthPage || isApiRoute || isLanding || isLegal;
+  const isPublic = isAuthPage || isApiRoute || isLanding || isLegal || isDashboardArea;
 
   // Unauthenticated users: allow landing + auth pages, redirect everything else to landing
   if (!user && !isPublic) {
