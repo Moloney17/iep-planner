@@ -1,10 +1,11 @@
 'use client';
 
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase';
 import type { User } from '@supabase/supabase-js';
+import Logo from '@/components/Logo';
+import Link from 'next/link';
 
 export default function NavBar() {
   const router = useRouter();
@@ -22,33 +23,26 @@ export default function NavBar() {
   const handleSignOut = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
-    router.push('/auth/login');
+    router.push('/landing');
     router.refresh();
   };
 
   return (
-    <nav className="bg-blue-700 text-white shadow-md no-print">
-      <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-3">
-          <span className="text-2xl">📋</span>
-          <div>
-            <p className="text-lg font-bold leading-tight">IEP Planner</p>
-            <p className="text-xs text-blue-200">Early Education Support Tool</p>
-          </div>
-        </Link>
-
-        <div className="flex items-center gap-3">
+    <nav style={{ background: '#1a1a2e', boxShadow: '0 2px 8px rgba(0,0,0,0.2)' }} className="no-print">
+      <div style={{ maxWidth: '1152px', margin: '0 auto', padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Logo size="sm" dark href={user ? '/dashboard' : '/landing'} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           {user && (
             <>
-              <Link href="/students/new" className="text-sm bg-white text-blue-700 font-semibold px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors">
+              <Link href="/students/new" style={{ fontSize: '14px', background: 'white', color: '#1a1a2e', fontWeight: 600, padding: '8px 16px', borderRadius: '100px', textDecoration: 'none' }}>
                 + Add Student
               </Link>
-              <div className="flex items-center gap-2 border-l border-blue-500 pl-3">
-                <div className="text-right hidden sm:block">
-                  <p className="text-xs text-blue-200">Signed in as</p>
-                  <p className="text-xs font-medium truncate max-w-[150px]">{user.user_metadata?.full_name || user.email}</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', borderLeft: '1px solid rgba(255,255,255,0.15)', paddingLeft: '12px' }}>
+                <div style={{ textAlign: 'right' }}>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', margin: 0 }}>Signed in as</p>
+                  <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.8)', margin: 0, fontWeight: 500 }}>{user.user_metadata?.full_name || user.email}</p>
                 </div>
-                <button onClick={handleSignOut} className="text-xs bg-blue-800 hover:bg-blue-900 px-3 py-1.5 rounded-lg transition-colors">
+                <button onClick={handleSignOut} style={{ fontSize: '13px', background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.7)', border: '1px solid rgba(255,255,255,0.15)', padding: '7px 14px', borderRadius: '6px', cursor: 'pointer' }}>
                   Sign Out
                 </button>
               </div>

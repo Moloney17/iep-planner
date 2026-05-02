@@ -295,8 +295,16 @@ export default function LandingPage() {
 
       {/* NAV */}
       <nav className="nav">
-        <Link href="/" className="nav-logo">
-          <div className="nav-logo-icon">📋</div>
+        <Link href="/" className="nav-logo" style={{textDecoration:'none',display:'flex',alignItems:'center',gap:'10px'}}>
+          <svg width="24" height="36" viewBox="0 0 28 42" fill="none" style={{flexShrink:0}}>
+            <ellipse cx="14" cy="14" rx="12" ry="12" fill="#fff8d6" opacity="0.8"/>
+            <path d="M4 16 C4 6 24 6 24 16 C24 22 20 26 18 30 L10 30 C8 26 4 22 4 16Z" fill="#f5c842"/>
+            <path d="M11 24 L11 16 C11 14 14 13 14 13 C14 13 17 14 17 16 L17 24" fill="none" stroke="#c08000" strokeWidth="1" strokeLinecap="round"/>
+            <ellipse cx="10" cy="11" rx="2" ry="4" fill="white" opacity="0.25" transform="rotate(-20 10 11)"/>
+            <rect x="9" y="31" width="10" height="2.5" rx="1" fill="#c08000"/>
+            <rect x="9" y="34" width="10" height="2" rx="1" fill="#b07000"/>
+            <rect x="10" y="37" width="8" height="3" rx="1.5" fill="#888"/>
+          </svg>
           <span className="nav-logo-text">SmartIEP<span className="nav-logo-tld">.co</span></span>
         </Link>
         <div className="nav-links">
@@ -500,7 +508,16 @@ export default function LandingPage() {
       {/* FOOTER */}
       <footer className="footer">
         <div>
-          <div className="footer-logo">SmartIEP<span>.co</span></div>
+          <div style={{display:'flex',alignItems:'center',gap:'10px',marginBottom:'8px'}}>
+          <svg width="20" height="30" viewBox="0 0 28 42" fill="none">
+            <path d="M4 16 C4 6 24 6 24 16 C24 22 20 26 18 30 L10 30 C8 26 4 22 4 16Z" fill="#f5c842"/>
+            <ellipse cx="10" cy="11" rx="2" ry="4" fill="white" opacity="0.2" transform="rotate(-20 10 11)"/>
+            <rect x="9" y="31" width="10" height="2.5" rx="1" fill="#c08000"/>
+            <rect x="9" y="34" width="10" height="2" rx="1" fill="#b07000"/>
+            <rect x="10" y="37" width="8" height="3" rx="1.5" fill="#888"/>
+          </svg>
+          <span style={{fontFamily:'Georgia,serif',fontSize:'20px',fontWeight:700,color:'#f8f7f4'}}>SmartIEP<span style={{color:'#f5c842'}}>.co</span></span>
+        </div>
           <div style={{marginTop: '8px', fontSize: '13px'}}>AI-assisted IEP planning for special educators.</div>
         </div>
         <div className="footer-links">

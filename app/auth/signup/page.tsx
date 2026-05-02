@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Logo from '@/components/Logo';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase';
 
@@ -54,10 +55,7 @@ export default function SignupPage() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link href="/landing" className="inline-flex items-center gap-2 mb-6">
-            <div className="w-10 h-10 bg-blue-700 rounded-lg flex items-center justify-center text-xl">📋</div>
-            <span className="text-xl font-bold text-gray-900">SmartIEP</span>
-          </Link>
+<div className="flex justify-center mb-6"><Logo size="md" href="/landing" /></div>
           <h1 className="text-2xl font-bold text-gray-900">Create your account</h1>
           <p className="text-gray-500 mt-1">Start planning IEPs with AI assistance</p>
         </div>
