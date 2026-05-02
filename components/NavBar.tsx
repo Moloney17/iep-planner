@@ -30,7 +30,7 @@ export default function NavBar() {
   return (
     <nav style={{ background: '#1a1a2e', boxShadow: '0 2px 8px rgba(0,0,0,0.2)' }} className="no-print">
       <div style={{ maxWidth: '1152px', margin: '0 auto', padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Logo size="sm" dark href={user ? '/dashboard' : '/landing'} />
+        <Logo size="sm" dark href={user ? '/dashboard' : '/landing'} showTld />
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           {user && (
             <>
