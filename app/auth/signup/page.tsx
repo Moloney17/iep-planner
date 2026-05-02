@@ -30,10 +30,10 @@ export default function SignupPage() {
     });
     if (error) { setError(error.message); setLoading(false); return; }
     // Notify admin of new signup
-    fetch('/api/notify', {
+    fetch('/api/notify-signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: 'new_user', data: { name } }),
+      body: JSON.stringify({ name, email }),
     }).catch(() => {});
     setSuccess(true);
     setTimeout(() => router.push('/auth/login'), 3000);
