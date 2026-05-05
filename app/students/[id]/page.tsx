@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Student, GeneratedIEP } from '@/lib/types';
 import { getStudent, saveStudent, calculateAge } from '@/lib/storage';
 import IEPViewer from '@/components/IEPViewer';
+import ProgressTab from '@/components/ProgressTab';
 
 export default function StudentPage() {
   const params = useParams();
@@ -16,6 +17,7 @@ export default function StudentPage() {
   const [regenError, setRegenError] = useState('');
   const [activeHistoryIndex, setActiveHistoryIndex] = useState(0);
   const [isExporting, setIsExporting] = useState(false);
+  const [activeMainTab, setActiveMainTab] = useState<'iep' | 'progress'>('iep');
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -135,7 +137,21 @@ export default function StudentPage() {
 
       {displayedIEP && !isRegenerating && (
         <>
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-6 text-xs text-amber-800 no-print flex items-start gap-2">
+          {/* Main tab switcher */}
+          <div className="flex gap-1 border-b border-gray-200 mb-6 no-print">
+            <button onClick={() => setActiveMainTab('iep')}
+              className={`flex items-center gap-1.5 px-5 py-2.5 text-sm font-medium border-b-2 transition-colors ${activeMainTab === 'iep' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}>
+              📋 IEP Document
+            </button>
+            <button onClick={() => setActiveMainTab('progress')}
+              className={`flex items-center gap-1.5 px-5 py-2.5 text-sm font-medium border-b-2 transition-colors ${activeMainTab === 'progress' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}>
+              📈 Progress Monitoring
+            </button>
+          </div>
+
+          {activeMainTab === 'progress' && <ProgressTab student={student} />}
+
+          {activeMainTab === 'iep' && <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-6 text-xs text-amber-800 no-print flex items-start gap-2">
             <span className="shrink-0">⚠️</span>
             <span><strong>Professional Review Required:</strong> This AI-generated IEP draft must be reviewed and approved by qualified special education staff before implementation.</span>
           </div>
@@ -143,6 +159,7 @@ export default function StudentPage() {
           <div className="mt-6 bg-gray-50 border rounded-lg p-4 text-xs text-gray-500 no-print">
             Generated {new Date(displayedIEP.generatedAt).toLocaleString()} · {displayedIEP.goals.length} goals · {displayedIEP.services.length} services
           </div>
+        </div>}
         </>
       )}
     </div>

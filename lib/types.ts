@@ -115,3 +115,56 @@ export interface ProgressPlan {
   responsibleParty: string;
   reportingSchedule: string;
 }
+
+
+export type ProgressStatus = 'on_track' | 'emerging' | 'not_yet' | 'mastered';
+
+export const PROGRESS_STATUS_LABELS: Record<ProgressStatus, string> = {
+  on_track: 'On Track',
+  emerging: 'Emerging',
+  not_yet: 'Not Yet',
+  mastered: '✅ Mastered',
+};
+
+export const PROGRESS_STATUS_COLORS: Record<ProgressStatus, string> = {
+  on_track: 'bg-green-100 text-green-800 border-green-200',
+  emerging: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+  not_yet: 'bg-red-100 text-red-800 border-red-200',
+  mastered: 'bg-blue-100 text-blue-800 border-blue-200',
+};
+
+export interface ProgressNote {
+  id: string;
+  studentId: string;
+  goalDomain: string;
+  goalStatement: string;
+  date: string;
+  currentPerformance: string;
+  status: ProgressStatus;
+  notes?: string;
+  createdAt: string;
+}
+
+export interface ProgressReport {
+  generatedAt: string;
+  reportingPeriod: string;
+  narratives: {
+    goalDomain: string;
+    goalStatement: string;
+    summary: string;
+    dataPoints: string[];
+    currentStatus: ProgressStatus;
+    recommendation: string;
+  }[];
+  overallSummary: string;
+}
+
+export const SPED_SYSTEMS = [
+  { id: 'csv', label: 'Universal CSV (all systems)' },
+  { id: 'frontline', label: 'Frontline Special Ed (Exceed)' },
+  { id: 'iep_direct', label: 'IEP Direct' },
+  { id: 'skyward', label: 'Skyward' },
+  { id: 'powerschool', label: 'PowerSchool Special Programs' },
+  { id: 'spedi', label: 'SPED-i' },
+  { id: 'edio', label: 'Edio' },
+] as const;

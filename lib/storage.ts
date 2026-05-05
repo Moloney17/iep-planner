@@ -132,6 +132,52 @@ export async function getArchivedStudents(): Promise<Student[]> {
   return (data || []).map(rowToStudent);
 }
 
+
+// ── Progress Notes ──────────────────────────────────────────
+export async function getProgressNotes(studentId: string): Promise<import('./types').ProgressNote[]> {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from('progress_notes')
+    .select('*')
+    .eq('student_id', studentId)
+    .order('date', { ascending: false });
+  if (error) { console.error('getProgressNotes error:', error); return []; }
+  return (data || []).map((row: Record<string, unknown>) => ({
+    id: row.id as string,
+    studentId: row.student_id as string,
+    goalDomain: row.goal_domain as string,
+    goalStatement: row.goal_statement as string,
+    date: row.date as string,
+    currentPerformance: row.current_performance as string,
+    status: row.status as import('./types').ProgressStatus,
+    notes: (row.notes as string) || undefined,
+    createdAt: row.created_at as string,
+  }));
+}
+
+export async function saveProgressNote(note: Omit<import('./types').ProgressNote, 'id' | 'createdAt'>): Promise<void> {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Not authenticated');
+  const { error } = await supabase.from('progress_notes').insert({
+    student_id: note.studentId,
+    goal_domain: note.goalDomain,
+    goal_statement: note.goalStatement,
+    date: note.date,
+    current_performance: note.currentPerformance,
+    status: note.status,
+    notes: note.notes || null,
+    user_id: user.id,
+  });
+  if (error) { console.error('saveProgressNote error:', error); throw error; }
+}
+
+export async function deleteProgressNote(id: string): Promise<void> {
+  const supabase = createClient();
+  const { error } = await supabase.from('progress_notes').delete().eq('id', id);
+  if (error) { console.error('deleteProgressNote error:', error); throw error; }
+}
+
 export function generateId(): string {
   // Use UUID format for Supabase compatibility
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
