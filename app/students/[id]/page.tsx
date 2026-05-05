@@ -151,15 +151,18 @@ export default function StudentPage() {
 
           {activeMainTab === 'progress' && <ProgressTab student={student} />}
 
-          {activeMainTab === 'iep' && <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-6 text-xs text-amber-800 no-print flex items-start gap-2">
-            <span className="shrink-0">⚠️</span>
-            <span><strong>Professional Review Required:</strong> This AI-generated IEP draft must be reviewed and approved by qualified special education staff before implementation.</span>
-          </div>
-          <IEPViewer iep={displayedIEP} studentName={student.name} />
-          <div className="mt-6 bg-gray-50 border rounded-lg p-4 text-xs text-gray-500 no-print">
-            Generated {new Date(displayedIEP.generatedAt).toLocaleString()} · {displayedIEP.goals.length} goals · {displayedIEP.services.length} services
-          </div>
-        </div>}
+          {activeMainTab === 'iep' && (
+            <>
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-6 text-xs text-amber-800 no-print flex items-start gap-2">
+                <span className="shrink-0">⚠️</span>
+                <span><strong>Professional Review Required:</strong> This AI-generated IEP draft must be reviewed and approved by qualified special education staff before implementation.</span>
+              </div>
+              <IEPViewer iep={displayedIEP} studentName={student.name} />
+              <div className="mt-6 bg-gray-50 border rounded-lg p-4 text-xs text-gray-500 no-print">
+                Generated {new Date(displayedIEP.generatedAt).toLocaleString()} · {displayedIEP.goals.length} goals · {displayedIEP.services.length} services
+              </div>
+            </>
+          )}
         </>
       )}
     </div>
