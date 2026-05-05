@@ -231,6 +231,19 @@ Return this exact JSON structure (no other text):
     }
 
     iepData.generatedAt = new Date().toISOString();
+    // Log usage event for admin dashboard
+    try {
+      await supabase.from('usage_events').insert({
+        user_id: user.id,
+        event_type: 'iep_generated',
+        metadata: {
+          student_name: student.name,
+          grade: student.grade,
+          disability: student.disabilityCategory,
+        }
+      });
+    } catch (e) { console.error('Usage log error:', e); }
+
     // Fire-and-forget admin notification
     const baseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ? 'https://www.smartiep.co' : 'http://localhost:3000';
     fetch(`${baseUrl}/api/notify`, {

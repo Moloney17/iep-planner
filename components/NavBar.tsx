@@ -10,6 +10,7 @@ import Link from 'next/link';
 export default function NavBar() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
+  const ADMIN_EMAIL = 'moloney.conor@gmail.com';
 
   useEffect(() => {
     const supabase = createClient();
@@ -34,6 +35,11 @@ export default function NavBar() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           {user && (
             <>
+              {user?.email === ADMIN_EMAIL && (
+                <Link href="/admin" style={{ fontSize: '13px', background: 'rgba(245,200,66,0.15)', color: '#f5c842', fontWeight: 600, padding: '7px 14px', borderRadius: '8px', textDecoration: 'none', border: '1px solid rgba(245,200,66,0.3)' }}>
+                  ⚙️ Admin
+                </Link>
+              )}
               <Link href="/students/new" style={{ fontSize: '14px', background: 'white', color: '#1a1a2e', fontWeight: 600, padding: '8px 16px', borderRadius: '100px', textDecoration: 'none' }}>
                 + Add Student
               </Link>
