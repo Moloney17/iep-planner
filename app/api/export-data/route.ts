@@ -348,6 +348,23 @@ export async function POST(request: NextRequest) {
 
     const { student, notes, system }: { student: Student; notes: ProgressNote[]; system: string } = await request.json();
 
+    // Verify student belongs to requesting user
+    const { data: studentRecord, error: studentError } = await supabase
+      .from('students')
+      .select('id')
+      .eq('id', student.id)
+      .single();
+    if (studentError || !studentRecord) {
+      return NextResponse.json({ error: 'Student not found or access denied.' }, { status: 403 });
+    }
+
+    // Audit log the export
+    await supabase.from('usage_events').insert({
+      user_id: user.id,
+      event_type: 'data_exported',
+      metadata: { student_id: student.id, student_name: student.name, system }
+    }).catch(() => {});
+
     let csv = '';
     switch (system) {
       case 'frontline': csv = buildFrontlineCSV(student, notes); break;

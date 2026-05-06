@@ -14,6 +14,8 @@ interface Stats {
   total_progress_notes: number;
   new_users_this_week: number;
   new_ieps_this_week: number;
+  total_exports: number;
+  total_progress_reports: number;
 }
 
 interface UserRow {
@@ -161,13 +163,15 @@ export default function AdminDashboard() {
       ) : (
         <>
           {/* Stats grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <StatCard label="Total Users" value={stats?.total_users || 0} color="text-blue-600" />
             <StatCard label="Total Students" value={stats?.total_students || 0} color="text-gray-900" />
-            <StatCard label="IEPs Generated" value={stats?.total_ieps || 0} color="text-purple-600" />
+            <StatCard label="IEPs on Record" value={stats?.total_ieps || 0} color="text-purple-600" />
             <StatCard label="Progress Notes" value={stats?.total_progress_notes || 0} color="text-green-600" />
             <StatCard label="New Users" value={stats?.new_users_this_week || 0} sub="last 7 days" color="text-blue-500" />
             <StatCard label="New IEPs" value={stats?.new_ieps_this_week || 0} sub="last 7 days" color="text-purple-500" />
+            <StatCard label="Total Exports" value={stats?.total_exports || 0} color="text-orange-600" />
+            <StatCard label="Progress Reports" value={stats?.total_progress_reports || 0} color="text-teal-600" />
           </div>
 
           {/* Chart */}

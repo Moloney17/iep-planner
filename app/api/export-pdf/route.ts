@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 import { Student, GeneratedIEP } from '@/lib/types';
 
 export const maxDuration = 30;
@@ -92,7 +94,41 @@ ${iep.assessmentAccommodations.length > 0 ? `<div class="section"><div class="se
 
 export async function POST(request: NextRequest) {
   try {
+    const cookieStore = await cookies();
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() { return cookieStore.getAll(); },
+          setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
+            cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
+          },
+        },
+      }
+    );
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
     const { student, iep }: { student: Student; iep: GeneratedIEP } = await request.json();
+
+    // Verify student belongs to requesting user
+    const { data: studentRecord, error: studentError } = await supabase
+      .from('students')
+      .select('id')
+      .eq('id', student.id)
+      .single();
+    if (studentError || !studentRecord) {
+      return NextResponse.json({ error: 'Student not found or access denied.' }, { status: 403 });
+    }
+
+    // Audit log
+    await supabase.from('usage_events').insert({
+      user_id: user.id,
+      event_type: 'pdf_exported',
+      metadata: { student_id: student.id, student_name: student.name }
+    }).catch(() => {});
+
     return new NextResponse(buildHtml(student, iep), { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : 'Export failed' }, { status: 500 });

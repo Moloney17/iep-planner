@@ -100,6 +100,14 @@ Return ONLY valid JSON in this exact format:
     if (fenceMatch) rawText = fenceMatch[1];
 
     const report = JSON.parse(rawText);
+
+    // Audit log
+    await supabase.from('usage_events').insert({
+      user_id: user.id,
+      event_type: 'progress_report_generated',
+      metadata: { student_id: student.id, student_name: student.name, reporting_period: reportingPeriod }
+    }).catch(() => {});
+
     return NextResponse.json(report);
 
   } catch (error) {

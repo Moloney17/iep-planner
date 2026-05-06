@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { NextRequest, NextResponse } from 'next/server';
 import { Student } from '@/lib/types';
+import { sanitizeStudentData } from '@/lib/sanitize';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
@@ -127,7 +128,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const student: Student = await request.json();
+    const rawStudent = await request.json();
+    const student: Student = sanitizeStudentData(rawStudent) as Student;
+
+    // Verify student belongs to requesting user
+    const { data: studentRecord, error: studentError } = await supabase
+      .from('students')
+      .select('id')
+      .eq('id', student.id)
+      .single();
+    if (studentError || !studentRecord) {
+      return NextResponse.json({ error: 'Student not found or access denied.' }, { status: 403 });
+    }
 
     const filledDomains = [
       student.presentLevels.cognitive && 'Cognitive/Academic',
