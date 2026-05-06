@@ -129,7 +129,7 @@ export async function POST(request: NextRequest) {
     }
 
     const rawStudent = await request.json();
-    const student: Student = sanitizeStudentData(rawStudent) as Student;
+    const student: Student = sanitizeStudentData(rawStudent) as unknown as Student;
 
     // Verify student belongs to requesting user
     const { data: studentRecord, error: studentError } = await supabase
