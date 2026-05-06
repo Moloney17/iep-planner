@@ -359,11 +359,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Audit log the export
-    await supabase.from('usage_events').insert({
-      user_id: user.id,
-      event_type: 'data_exported',
-      metadata: { student_id: student.id, student_name: student.name, system }
-    }).catch(() => {});
+    try { await supabase.from('usage_events').insert({ user_id: user.id, event_type: 'data_exported', metadata: { student_id: student.id, student_name: student.name, system } }); } catch {}
 
     let csv = '';
     switch (system) {

@@ -123,11 +123,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Audit log
-    await supabase.from('usage_events').insert({
+    try { await supabase.from('usage_events').insert({
       user_id: user.id,
       event_type: 'pdf_exported',
       metadata: { student_id: student.id, student_name: student.name }
-    }).catch(() => {});
+    ); } catch {}
 
     return new NextResponse(buildHtml(student, iep), { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
   } catch (error) {
