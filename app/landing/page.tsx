@@ -202,17 +202,17 @@ export default function LandingPage() {
         .how-section .section-label { color: #f5c842; }
         .how-section .section-h2 { color: #f8f7f4; }
         .how-section .section-sub { color: rgba(248,247,244,0.7); }
-        .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-top: 60px; }
+        .steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 32px; margin-top: 60px; }
         .step { position: relative; }
         .step-num {
-          font-family: Georgia, serif; font-size: 56px; font-weight: 700;
-          color: rgba(245,200,66,0.2); line-height: 1; margin-bottom: 14px;
+          font-family: Georgia, serif; font-size: 44px; font-weight: 700;
+          color: rgba(245,200,66,0.25); line-height: 1; margin-bottom: 12px;
         }
         .step-h3 { font-size: 17px; font-weight: 700; color: #f8f7f4; margin-bottom: 10px; }
         .step-p { font-size: 14px; line-height: 1.75; color: rgba(248,247,244,0.65); }
         .step-connector {
-          position: absolute; top: 28px; right: -20px; width: 40px; height: 1px;
-          background: rgba(245,200,66,0.25);
+          position: absolute; top: 28px; right: -16px; width: 32px; height: 1px;
+          background: rgba(245,200,66,0.2);
         }
 
         /* BUILT BY SPED */
@@ -355,6 +355,7 @@ export default function LandingPage() {
           .hero { padding: 100px 24px 60px; min-height: auto; }
           .hero-visual { display: none; }
           .section, .how-section, .testimonials-section, .stats-section, .cta-section, .sped-section, .pricing-section { padding: 60px 24px; }
+          .steps { grid-template-columns: repeat(2, 1fr) !important; }
           .proof-bar { padding: 20px 24px; gap: 24px; }
           .footer { padding: 40px 24px; flex-direction: column; align-items: flex-start; }
           .disclaimer { padding: 16px 24px; }
