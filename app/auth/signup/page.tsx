@@ -6,6 +6,30 @@ import Logo from '@/components/Logo';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase';
 
+
+function getPasswordStrength(password: string): {
+  score: number;
+  label: string;
+  color: string;
+  checks: { label: string; passed: boolean }[];
+} {
+  const checks = [
+    { label: 'At least 8 characters', passed: password.length >= 8 },
+    { label: 'At least one uppercase letter', passed: /[A-Z]/.test(password) },
+    { label: 'At least one number', passed: /[0-9]/.test(password) },
+    { label: 'At least one special character (!@#$%^&*)', passed: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password) },
+  ];
+  const score = checks.filter(c => c.passed).length;
+  const labels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+  const colors = ['', '#dc2626', '#f59e0b', '#3b82f6', '#16a34a'];
+  return { score, label: labels[score] || '', color: colors[score] || '#e5e7eb', checks };
+}
+
+function isPasswordValid(password: string): boolean {
+  const s = getPasswordStrength(password);
+  return s.score === 4;
+}
+
 export default function SignupPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
@@ -22,7 +46,7 @@ export default function SignupPage() {
     setError('');
     if (!agreedToTerms) { setError('Please agree to the Terms of Service and Privacy Policy to continue.'); return; }
     if (password !== confirmPassword) { setError('Passwords do not match.'); return; }
-    if (password.length < 8) { setError('Password must be at least 8 characters.'); return; }
+    if (!isPasswordValid(password)) { setError('Password does not meet the requirements below.'); return; }
     setLoading(true);
     const supabase = createClient();
     const { error } = await supabase.auth.signUp({
@@ -82,7 +106,28 @@ export default function SignupPage() {
               <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
               <input type="password" required value={password} onChange={e => setPassword(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Min. 8 characters" />
+                placeholder="Create a strong password" />
+              {password.length > 0 && (() => {
+                const strength = getPasswordStrength(password);
+                return (
+                  <div className="mt-2">
+                    <div className="flex gap-1 mb-2">
+                      {[1,2,3,4].map(i => (
+                        <div key={i} className="flex-1 h-1.5 rounded-full transition-all" style={{ background: i <= strength.score ? strength.color : '#e5e7eb' }} />
+                      ))}
+                    </div>
+                    {strength.label && <p className="text-xs font-medium mb-1.5" style={{ color: strength.color }}>{strength.label} password</p>}
+                    <div className="space-y-1">
+                      {strength.checks.map((check, i) => (
+                        <p key={i} className="text-xs flex items-center gap-1.5" style={{ color: check.passed ? '#16a34a' : '#9ca3af' }}>
+                          <span>{check.passed ? '✓' : '○'}</span>
+                          {check.label}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
 
             <div>
