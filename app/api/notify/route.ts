@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
 
     const RESEND_API_KEY = process.env.RESEND_API_KEY;
     const ADMIN_EMAIL = 'moloney.conor@gmail.com';
-    const FROM_EMAIL = 'SmartIEP <onboarding@resend.dev>';
+    const FROM_EMAIL = 'SmartIEP <noreply@smartiep.co>';
 
     const sendEmail = async (to: string, subject: string, html: string) => {
       const res = await fetch('https://api.resend.com/emails', {
