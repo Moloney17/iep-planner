@@ -1,8 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
 
 export default function LandingPage() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <div className="landing-root">
       <style>{`
@@ -15,16 +18,16 @@ export default function LandingPage() {
           overflow-x: hidden;
         }
 
-        /* NAV */
+        /* ─── NAV ─────────────────────────────────────────── */
         .nav {
           position: fixed; top: 0; left: 0; right: 0; z-index: 100;
           display: flex; align-items: center; justify-content: space-between;
-          padding: 20px 60px;
+          padding: 18px 60px;
           background: rgba(248, 247, 244, 0.95);
           backdrop-filter: blur(12px);
           border-bottom: 1px solid rgba(26,26,46,0.08);
         }
-        .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
         .nav-logo-text { font-family: Georgia, serif; font-size: 20px; font-weight: 700; color: #1a1a2e; }
         .nav-logo-tld { color: #f5c842; }
         .nav-links { display: flex; align-items: center; gap: 32px; }
@@ -36,11 +39,40 @@ export default function LandingPage() {
           text-decoration: none; transition: all 0.2s;
         }
         .nav-cta:hover { background: #2d2d4e; transform: translateY(-1px); }
+        .nav-hamburger {
+          display: none; background: none; border: none; cursor: pointer;
+          padding: 4px; flex-direction: column; gap: 5px;
+        }
+        .nav-hamburger span {
+          display: block; width: 22px; height: 2px; background: #1a1a2e;
+          border-radius: 2px; transition: all 0.3s;
+        }
 
-        /* HERO */
+        /* Mobile menu */
+        .mobile-menu {
+          display: none; position: fixed; top: 61px; left: 0; right: 0; z-index: 99;
+          background: rgba(248,247,244,0.98); backdrop-filter: blur(12px);
+          padding: 20px 24px 28px;
+          border-bottom: 1px solid rgba(26,26,46,0.1);
+          flex-direction: column; gap: 0;
+        }
+        .mobile-menu.open { display: flex; }
+        .mobile-menu-link {
+          text-decoration: none; color: #333; font-size: 16px; font-weight: 500;
+          padding: 14px 0; border-bottom: 1px solid rgba(26,26,46,0.06);
+        }
+        .mobile-menu-link:last-of-type { border-bottom: none; }
+        .mobile-menu-cta {
+          margin-top: 16px; background: #1a1a2e; color: #f8f7f4;
+          padding: 14px 24px; border-radius: 100px; text-decoration: none;
+          font-size: 15px; font-weight: 600; text-align: center;
+        }
+
+        /* ─── HERO ───────────────────────────────────────── */
         .hero {
           min-height: 100vh;
-          display: flex; align-items: center;
+          display: flex; align-items: center; justify-content: space-between;
+          gap: 48px;
           padding: 120px 60px 80px;
           position: relative; overflow: hidden;
         }
@@ -54,34 +86,39 @@ export default function LandingPage() {
           background-image: linear-gradient(#1a1a2e 1px, transparent 1px), linear-gradient(90deg, #1a1a2e 1px, transparent 1px);
           background-size: 60px 60px;
         }
-        .hero-content { position: relative; z-index: 1; max-width: 620px; }
+
+        /* LEFT COLUMN */
+        .hero-content {
+          position: relative; z-index: 1;
+          flex: 1; min-width: 0; max-width: 580px;
+        }
         .hero-badge {
           display: inline-flex; align-items: center; gap: 8px;
           background: rgba(74,144,217,0.1); border: 1px solid rgba(74,144,217,0.2);
           color: #2a6fad; padding: 6px 14px; border-radius: 100px;
-          font-size: 13px; font-weight: 600; margin-bottom: 28px;
+          font-size: 13px; font-weight: 500; margin-bottom: 28px;
         }
         .hero-badge-dot { width: 6px; height: 6px; background: #4a90d9; border-radius: 50%; animation: pulse 2s infinite; }
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
         .hero-h1 {
           font-family: Georgia, serif;
-          font-size: clamp(40px, 5.5vw, 68px);
+          font-size: clamp(40px, 4.5vw, 64px);
           font-weight: 700; line-height: 1.1;
           color: #1a1a2e; margin-bottom: 24px;
           letter-spacing: -0.02em;
         }
         .hero-h1 em { font-style: italic; color: #185fa5; }
         .hero-sub {
-          font-size: 18px; line-height: 1.75; color: #444;
-          margin-bottom: 40px; max-width: 520px;
+          font-size: 17px; line-height: 1.7; color: #555;
+          margin-bottom: 40px; font-weight: 300; max-width: 500px;
         }
         .hero-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
         .btn-primary {
           background: #1a1a2e; color: #f8f7f4;
-          padding: 16px 36px; border-radius: 100px;
-          font-size: 16px; font-weight: 600; text-decoration: none;
+          padding: 15px 32px; border-radius: 100px;
+          font-size: 15px; font-weight: 600; text-decoration: none;
           transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
-          box-shadow: 0 4px 24px rgba(26,26,46,0.2);
+          box-shadow: 0 4px 20px rgba(26,26,46,0.2);
         }
         .btn-primary:hover { background: #2d2d4e; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(26,26,46,0.25); }
         .btn-secondary {
@@ -90,23 +127,23 @@ export default function LandingPage() {
           border-bottom: 1px solid transparent; transition: border-color 0.2s;
         }
         .btn-secondary:hover { border-color: #1a1a2e; }
-        .hero-trust { margin-top: 48px; display: flex; align-items: center; gap: 14px; }
+        .hero-trust { margin-top: 48px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
         .hero-trust-text { font-size: 13px; color: #888; }
         .hero-avatars { display: flex; }
         .hero-avatar {
           width: 32px; height: 32px; border-radius: 50%; border: 2px solid #f8f7f4;
           background: #1a1a2e; margin-left: -8px; display: flex; align-items: center;
-          justify-content: center; font-size: 11px; font-weight: 700; color: #f8f7f4;
+          justify-content: center; font-size: 11px; font-weight: 600; color: #f8f7f4;
         }
         .hero-avatar:first-child { margin-left: 0; }
-        .hero-avatar.a2 { background: #185fa5; }
+        .hero-avatar.a2 { background: #4a90d9; }
         .hero-avatar.a3 { background: #5dcaa5; }
         .hero-avatar.a4 { background: #d85a30; }
 
-        /* HERO VISUAL */
+        /* RIGHT COLUMN – IEP card */
         .hero-visual {
-          position: absolute; right: 60px; top: 50%; transform: translateY(-50%);
-          width: 420px; z-index: 1;
+          position: relative; z-index: 1;
+          width: 400px; flex-shrink: 0;
         }
         .iep-card {
           background: white; border-radius: 16px; padding: 24px;
@@ -140,127 +177,118 @@ export default function LandingPage() {
         .floating-chip {
           position: absolute; background: white; border-radius: 100px; padding: 8px 16px;
           box-shadow: 0 4px 20px rgba(26,26,46,0.1); display: flex; align-items: center; gap: 8px;
-          font-size: 13px; font-weight: 600; white-space: nowrap;
+          font-size: 13px; font-weight: 600; white-space: nowrap; z-index: 2;
         }
+        .chip-dot { width: 8px; height: 8px; border-radius: 50%; }
         .chip-1 { top: -16px; right: -16px; color: #0f6e56; }
         .chip-2 { bottom: -16px; left: -16px; color: #185fa5; }
-        .chip-dot { width: 8px; height: 8px; border-radius: 50%; }
 
-        /* PROOF BAR */
+        /* ─── PROOF BAR ───────────────────────────────────── */
         .proof-bar {
-          background: #1a1a2e; padding: 22px 60px;
-          display: flex; align-items: center; justify-content: center; gap: 48px;
-          flex-wrap: wrap;
+          background: white; border-top: 1px solid rgba(26,26,46,0.06);
+          border-bottom: 1px solid rgba(26,26,46,0.06);
+          padding: 20px 60px;
+          display: flex; align-items: center; justify-content: center;
+          gap: 48px; flex-wrap: wrap;
         }
-        .proof-item { display: flex; align-items: center; gap: 10px; color: rgba(248,247,244,0.85); font-size: 14px; font-weight: 500; }
+        .proof-item { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #666; font-weight: 500; }
         .proof-icon { font-size: 18px; }
 
-        /* SECTIONS */
+        /* ─── SECTIONS (shared) ───────────────────────────── */
         .section { padding: 100px 60px; }
-        .section-label {
-          font-size: 12px; font-weight: 700; color: #185fa5;
-          text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 12px;
-        }
-        .section-h2 {
-          font-family: Georgia, serif; font-size: clamp(30px, 4vw, 46px);
-          font-weight: 700; color: #1a1a2e; line-height: 1.2; margin-bottom: 16px;
-        }
-        .section-sub { font-size: 17px; color: #555; line-height: 1.75; max-width: 560px; }
+        .section-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #185fa5; margin-bottom: 16px; }
+        .section-h2 { font-family: Georgia, serif; font-size: clamp(28px, 3vw, 42px); font-weight: 700; color: #1a1a2e; line-height: 1.2; margin-bottom: 16px; }
+        .section-sub { font-size: 17px; color: #666; line-height: 1.6; max-width: 560px; }
 
-        /* FEATURES GRID */
+        /* ─── FEATURES ────────────────────────────────────── */
         .features-grid {
-          display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-          gap: 24px; margin-top: 60px;
+          display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+          gap: 20px; margin-top: 56px;
         }
         .feature-card {
-          background: white; border-radius: 16px; padding: 32px;
+          background: white; border-radius: 16px; padding: 28px;
           border: 1px solid rgba(26,26,46,0.07);
-          transition: all 0.3s; position: relative; overflow: hidden;
+          transition: transform 0.2s, box-shadow 0.2s;
         }
-        .feature-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(26,26,46,0.1); }
-        .feature-card::before {
-          content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-          background: var(--accent, #185fa5);
-        }
-        .feature-icon {
-          width: 52px; height: 52px; border-radius: 14px;
-          background: var(--accent-light, #e8f0fb);
-          display: flex; align-items: center; justify-content: center;
-          font-size: 24px; margin-bottom: 20px;
-        }
-        .feature-h3 { font-size: 18px; font-weight: 700; color: #1a1a2e; margin-bottom: 10px; }
-        .feature-p { font-size: 14px; line-height: 1.75; color: #555; }
+        .feature-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(26,26,46,0.09); }
+        .feature-icon { font-size: 28px; margin-bottom: 16px; }
+        .feature-title { font-weight: 700; font-size: 16px; color: #1a1a2e; margin-bottom: 8px; }
+        .feature-desc { font-size: 14px; color: #666; line-height: 1.6; }
         .feature-tag {
           display: inline-block; margin-top: 14px;
-          font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 100px;
-          background: var(--accent-light, #e8f0fb); color: var(--accent, #185fa5);
-          text-transform: uppercase; letter-spacing: 0.06em;
+          font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+          padding: 3px 9px; border-radius: 100px;
         }
+        .tag-core { background: #eaf6f1; color: #0f6e56; }
+        .tag-pro { background: #e8f0fb; color: #185fa5; }
+        .tag-idea { background: #fef9e7; color: #9a6e00; }
 
-        /* HOW IT WORKS */
-        .how-section { background: #1a1a2e; padding: 100px 60px; }
-        .how-section .section-label { color: #f5c842; }
-        .how-section .section-h2 { color: #f8f7f4; }
-        .how-section .section-sub { color: rgba(248,247,244,0.7); }
-        .steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 32px; margin-top: 60px; }
+        /* ─── HOW IT WORKS ────────────────────────────────── */
+        .how-section { background: white; padding: 100px 60px; }
+        .steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 28px; margin-top: 56px; }
         .step { position: relative; }
+        .step-connector {
+          position: absolute; top: 26px; right: -14px; width: 28px; height: 1px;
+          background: rgba(245,200,66,0.25);
+        }
         .step-num {
           font-family: Georgia, serif; font-size: 44px; font-weight: 700;
           color: rgba(245,200,66,0.25); line-height: 1; margin-bottom: 12px;
         }
-        .step-h3 { font-size: 17px; font-weight: 700; color: #f8f7f4; margin-bottom: 10px; }
-        .step-p { font-size: 14px; line-height: 1.75; color: rgba(248,247,244,0.65); }
-        .step-connector {
-          position: absolute; top: 28px; right: -16px; width: 32px; height: 1px;
-          background: rgba(245,200,66,0.2);
-        }
+        .step-title { font-weight: 700; font-size: 15px; color: #1a1a2e; margin-bottom: 8px; }
+        .step-desc { font-size: 13px; color: #666; line-height: 1.6; }
 
-        /* BUILT BY SPED */
+        /* ─── BUILT BY SPED ───────────────────────────────── */
         .sped-section {
-          background: white; padding: 100px 60px;
-          border-top: 1px solid rgba(26,26,46,0.06);
+          background: #1a1a2e; padding: 100px 60px;
+          display: flex; align-items: center; gap: 80px; flex-wrap: wrap;
         }
-        .sped-inner {
-          max-width: 800px; margin: 0 auto; text-align: center;
-        }
-        .sped-badge {
-          display: inline-flex; align-items: center; gap: 8px;
-          background: #fff8d6; border: 1px solid rgba(245,200,66,0.4);
-          color: #c08000; padding: 6px 16px; border-radius: 100px;
-          font-size: 13px; font-weight: 700; margin-bottom: 28px;
-          letter-spacing: 0.04em;
-        }
-        .sped-h2 {
-          font-family: Georgia, serif; font-size: clamp(28px, 3.5vw, 42px);
-          font-weight: 700; color: #1a1a2e; line-height: 1.2; margin-bottom: 20px;
-        }
-        .sped-p { font-size: 17px; line-height: 1.85; color: #555; margin-bottom: 16px; }
-        .sped-pills { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 36px; }
+        .sped-content { flex: 1; min-width: 280px; }
+        .sped-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #f5c842; margin-bottom: 16px; }
+        .sped-h2 { font-family: Georgia, serif; font-size: clamp(26px, 2.8vw, 38px); font-weight: 700; color: #f8f7f4; line-height: 1.25; margin-bottom: 20px; }
+        .sped-sub { font-size: 16px; color: rgba(248,247,244,0.65); line-height: 1.7; }
+        .sped-pills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 32px; }
         .sped-pill {
-          background: #f8f7f4; border: 1px solid rgba(26,26,46,0.1);
-          color: #333; font-size: 14px; font-weight: 500;
-          padding: 8px 18px; border-radius: 100px;
+          background: rgba(248,247,244,0.08); border: 1px solid rgba(248,247,244,0.15);
+          color: rgba(248,247,244,0.8); padding: 7px 16px; border-radius: 100px;
+          font-size: 13px; font-weight: 500;
         }
+        .sped-quote { flex: 1; min-width: 280px; max-width: 420px; }
+        .sped-quote-text {
+          font-family: Georgia, serif; font-size: 19px; font-style: italic;
+          color: rgba(248,247,244,0.9); line-height: 1.7; margin-bottom: 24px;
+        }
+        .sped-quote-author { display: flex; align-items: center; gap: 14px; }
+        .sped-quote-avatar {
+          width: 48px; height: 48px; border-radius: 50%; background: #f5c842;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 16px; font-weight: 700; color: #1a1a2e; flex-shrink: 0;
+        }
+        .sped-quote-name { font-weight: 700; color: #f8f7f4; font-size: 14px; }
+        .sped-quote-role { font-size: 12px; color: rgba(248,247,244,0.5); margin-top: 3px; }
 
-        /* TESTIMONIALS */
+        /* ─── TESTIMONIALS ────────────────────────────────── */
         .testimonials-section { padding: 100px 60px; background: #f8f7f4; }
-        .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 60px; }
-        .testimonial-card {
-          background: white; border-radius: 16px; padding: 32px;
-          border: 1px solid rgba(26,26,46,0.07);
-          display: flex; flex-direction: column; gap: 20px;
+        .testimonials-grid {
+          display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 20px; margin-top: 56px;
         }
-        .testimonial-stars { color: #f0a500; font-size: 16px; letter-spacing: 2px; }
+        .testimonial-card {
+          background: white; border-radius: 16px; padding: 28px;
+          border: 1px solid rgba(26,26,46,0.07);
+          display: flex; flex-direction: column; gap: 18px;
+        }
+        .testimonial-stars { color: #f0a500; font-size: 15px; letter-spacing: 2px; }
         .testimonial-quote {
           font-family: Georgia, serif; font-size: 15px; line-height: 1.8;
           color: #333; font-style: italic; flex: 1;
         }
         .testimonial-author { display: flex; align-items: center; gap: 12px; }
         .testimonial-avatar {
-          width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+          width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
           background: var(--av-bg, #e8f0fb);
           display: flex; align-items: center; justify-content: center;
-          font-size: 14px; font-weight: 700; color: var(--av-color, #185fa5);
+          font-size: 13px; font-weight: 700; color: var(--av-color, #185fa5);
         }
         .testimonial-name { font-weight: 700; font-size: 14px; color: #1a1a2e; }
         .testimonial-role { font-size: 12px; color: #888; margin-top: 2px; }
@@ -269,13 +297,13 @@ export default function LandingPage() {
           background: #e8f0fb; color: #185fa5; margin-left: auto; white-space: nowrap;
         }
 
-        /* STATS */
+        /* ─── STATS ───────────────────────────────────────── */
         .stats-section { background: #185fa5; padding: 80px 60px; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; text-align: center; }
-        .stat-num { font-family: Georgia, serif; font-size: 56px; font-weight: 700; color: white; line-height: 1; }
-        .stat-label { font-size: 15px; color: rgba(255,255,255,0.85); margin-top: 10px; line-height: 1.5; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 40px; text-align: center; }
+        .stat-num { font-family: Georgia, serif; font-size: 52px; font-weight: 700; color: white; line-height: 1; }
+        .stat-label { font-size: 14px; color: rgba(255,255,255,0.8); margin-top: 10px; line-height: 1.5; }
 
-        /* PRICING TEASER */
+        /* ─── PRICING ─────────────────────────────────────── */
         .pricing-section { padding: 100px 60px; background: #f8f7f4; text-align: center; }
         .pricing-cards { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin-top: 56px; }
         .pricing-card {
@@ -293,78 +321,137 @@ export default function LandingPage() {
           padding: 4px 14px; border-radius: 100px; white-space: nowrap;
           letter-spacing: 0.05em; text-transform: uppercase;
         }
-        .pricing-tier { font-size: 13px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
-        .pricing-card.featured .pricing-tier { color: rgba(255,255,255,0.5); }
+        .pricing-tier { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #999; margin-bottom: 12px; }
+        .pricing-tier.light { color: rgba(248,247,244,0.5); }
         .pricing-price { font-family: Georgia, serif; font-size: 48px; font-weight: 700; color: #1a1a2e; line-height: 1; }
-        .pricing-card.featured .pricing-price { color: white; }
-        .pricing-period { font-size: 15px; color: #888; margin-bottom: 24px; }
-        .pricing-card.featured .pricing-period { color: rgba(255,255,255,0.5); }
-        .pricing-features { list-style: none; margin-bottom: 32px; }
-        .pricing-features li { font-size: 14px; color: #444; padding: 7px 0; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; gap: 10px; }
-        .pricing-card.featured .pricing-features li { color: rgba(255,255,255,0.8); border-color: rgba(255,255,255,0.1); }
-        .pricing-features li:last-child { border-bottom: none; }
-        .pricing-check { color: #185fa5; font-weight: 700; }
-        .pricing-card.featured .pricing-check { color: #f5c842; }
-        .pricing-lock { color: #ccc; }
+        .pricing-price.light { color: #f8f7f4; }
+        .pricing-period { font-size: 14px; color: #888; margin-top: 4px; }
+        .pricing-period.light { color: rgba(248,247,244,0.5); }
+        .pricing-divider { height: 1px; background: rgba(26,26,46,0.08); margin: 24px 0; }
+        .pricing-divider.light { background: rgba(248,247,244,0.1); }
+        .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+        .pricing-features li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: #444; line-height: 1.4; }
+        .pricing-features li.light { color: rgba(248,247,244,0.8); }
+        .pricing-features li.locked { color: #bbb; }
+        .pricing-check { color: #0f6e56; font-weight: 700; flex-shrink: 0; }
+        .pricing-check.light { color: #5dcaa5; }
+        .pricing-lock { color: #ccc; flex-shrink: 0; }
         .pricing-btn {
-          display: block; text-align: center; padding: 14px; border-radius: 100px;
-          font-size: 15px; font-weight: 600; text-decoration: none; transition: all 0.2s;
-          border: 2px solid #1a1a2e; color: #1a1a2e;
+          display: block; text-align: center; padding: 14px;
+          border-radius: 100px; font-size: 15px; font-weight: 700;
+          text-decoration: none; transition: all 0.2s;
         }
-        .pricing-btn:hover { background: #1a1a2e; color: white; }
-        .pricing-btn.featured { background: #f5c842; border-color: #f5c842; color: #1a1a2e; }
-        .pricing-btn.featured:hover { background: #e5b832; border-color: #e5b832; }
+        .pricing-btn-free { background: #f8f7f4; color: #1a1a2e; border: 1.5px solid rgba(26,26,46,0.15); }
+        .pricing-btn-free:hover { background: #eee; }
+        .pricing-btn-pro { background: #f5c842; color: #1a1a2e; }
+        .pricing-btn-pro:hover { background: #e8b800; transform: translateY(-1px); }
 
-        /* CTA */
+        /* ─── CTA ─────────────────────────────────────────── */
         .cta-section {
-          padding: 120px 60px; text-align: center;
-          background: white;
+          background: #1a1a2e; padding: 100px 60px; text-align: center;
         }
-        .cta-section .section-h2 { margin: 0 auto 16px; max-width: 600px; }
-        .cta-section .section-sub { margin: 0 auto 40px; text-align: center; }
-        .cta-actions { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
-        .btn-outline {
-          border: 2px solid #1a1a2e; color: #1a1a2e;
-          padding: 14px 32px; border-radius: 100px;
-          font-size: 15px; font-weight: 600; text-decoration: none;
-          transition: all 0.2s;
+        .cta-h2 { font-family: Georgia, serif; font-size: clamp(28px, 3vw, 44px); font-weight: 700; color: #f8f7f4; margin-bottom: 16px; }
+        .cta-sub { font-size: 17px; color: rgba(248,247,244,0.6); margin-bottom: 40px; }
+        .cta-btn {
+          display: inline-flex; align-items: center; gap: 8px;
+          background: #f5c842; color: #1a1a2e; padding: 16px 40px;
+          border-radius: 100px; font-size: 16px; font-weight: 700;
+          text-decoration: none; transition: all 0.2s;
+          box-shadow: 0 4px 20px rgba(245,200,66,0.3);
         }
-        .btn-outline:hover { background: #1a1a2e; color: #f8f7f4; }
-        .cta-note { margin-top: 20px; font-size: 13px; color: #aaa; }
+        .cta-btn:hover { background: #e8b800; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(245,200,66,0.4); }
+        .cta-fine { margin-top: 20px; font-size: 13px; color: rgba(248,247,244,0.35); }
 
-        /* FOOTER */
+        /* ─── FOOTER ──────────────────────────────────────── */
         .footer {
-          background: #1a1a2e; padding: 60px;
-          color: rgba(248,247,244,0.5);
-          display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px;
+          background: #111827; padding: 48px 60px;
+          display: flex; justify-content: space-between; align-items: center;
+          flex-wrap: wrap; gap: 24px;
         }
-        .footer-logo { font-family: Georgia, serif; font-size: 20px; font-weight: 700; color: #f8f7f4; }
+        .footer-logo { font-family: Georgia, serif; font-size: 19px; font-weight: 700; color: #f8f7f4; }
         .footer-logo span { color: #f5c842; }
         .footer-links { display: flex; gap: 28px; flex-wrap: wrap; }
-        .footer-link { text-decoration: none; color: rgba(248,247,244,0.5); font-size: 14px; transition: color 0.2s; }
+        .footer-link { text-decoration: none; color: rgba(248,247,244,0.45); font-size: 14px; transition: color 0.2s; }
         .footer-link:hover { color: #f8f7f4; }
-        .footer-copy { font-size: 13px; }
+        .footer-copy { font-size: 13px; color: rgba(248,247,244,0.3); }
         .disclaimer {
-          background: #111; padding: 16px 60px; text-align: center;
-          font-size: 12px; color: rgba(248,247,244,0.35); line-height: 1.6;
+          background: #0d131e; padding: 16px 60px; text-align: center;
+          font-size: 12px; color: rgba(248,247,244,0.25); line-height: 1.6;
         }
 
+        /* ─── RESPONSIVE: 1200px ─────────────────────────── */
+        @media (max-width: 1200px) {
+          .hero-visual { width: 360px; }
+        }
+
+        /* ─── RESPONSIVE: 1024px ─────────────────────────── */
+        @media (max-width: 1024px) {
+          .hero { gap: 36px; }
+          .hero-visual { width: 320px; }
+          .steps { grid-template-columns: repeat(3, 1fr); }
+          .steps .step:nth-child(3) .step-connector { display: none; }
+        }
+
+        /* ─── RESPONSIVE: 900px ──────────────────────────── */
         @media (max-width: 900px) {
           .nav { padding: 16px 24px; }
           .nav-links { display: none; }
-          .hero { padding: 100px 24px 60px; min-height: auto; }
-          .hero-visual { display: none; }
-          .section, .how-section, .testimonials-section, .stats-section, .cta-section, .sped-section, .pricing-section { padding: 60px 24px; }
-          .steps { grid-template-columns: repeat(2, 1fr) !important; }
-          .proof-bar { padding: 20px 24px; gap: 24px; }
-          .footer { padding: 40px 24px; flex-direction: column; align-items: flex-start; }
+          .nav-hamburger { display: flex; }
+
+          /* Hero goes single column */
+          .hero {
+            flex-direction: column; align-items: flex-start;
+            padding: 100px 24px 60px; min-height: auto; gap: 48px;
+          }
+          .hero-content { max-width: 100%; }
+          .hero-visual { width: 100%; max-width: 440px; align-self: center; }
+          .chip-1 { top: -12px; right: -8px; font-size: 12px; padding: 6px 12px; }
+          .chip-2 { bottom: -12px; left: -8px; font-size: 12px; padding: 6px 12px; }
+
+          .proof-bar { padding: 20px 24px; gap: 20px; }
+          .proof-item { font-size: 12px; }
+
+          .section { padding: 72px 24px; }
+          .how-section { padding: 72px 24px; }
+          .testimonials-section { padding: 72px 24px; }
+          .stats-section { padding: 60px 24px; }
+          .sped-section { padding: 72px 24px; gap: 48px; }
+          .pricing-section { padding: 72px 24px; }
+          .cta-section { padding: 72px 24px; }
+
+          .steps { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+          .steps .step:nth-child(2) .step-connector,
+          .steps .step:nth-child(4) .step-connector { display: none; }
+          .steps .step:nth-child(3) .step-connector { display: block; }
+
+          .sped-section { flex-direction: column; }
+          .sped-quote { max-width: 100%; }
+
+          .footer { padding: 40px 24px; flex-direction: column; align-items: flex-start; gap: 20px; }
+          .footer-links { gap: 20px; }
           .disclaimer { padding: 16px 24px; }
+          .pricing-cards { flex-direction: column; align-items: center; }
+          .pricing-card { width: 100%; max-width: 360px; }
+        }
+
+        /* ─── RESPONSIVE: 480px ──────────────────────────── */
+        @media (max-width: 480px) {
+          .hero-h1 { font-size: 36px; }
+          .hero-badge { font-size: 11px; }
+          .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 28px; }
+          .stat-num { font-size: 40px; }
+          .features-grid { grid-template-columns: 1fr; }
+          .testimonials-grid { grid-template-columns: 1fr; }
+          .steps { grid-template-columns: 1fr 1fr; }
+          .proof-bar { flex-direction: column; align-items: flex-start; gap: 12px; }
+          .hero-actions { flex-direction: column; align-items: flex-start; }
+          .btn-primary { width: 100%; justify-content: center; }
         }
       `}</style>
 
       {/* NAV */}
       <nav className="nav">
-        <a href="/" className="nav-logo" style={{textDecoration:'none',display:'flex',alignItems:'center',gap:'8px'}}>
+        <a href="/" className="nav-logo">
           <span style={{fontSize:'22px',lineHeight:'1'}}>💡</span>
           <span className="nav-logo-text">SmartIEP<span className="nav-logo-tld">.co</span></span>
         </a>
@@ -375,12 +462,32 @@ export default function LandingPage() {
           <a href="#testimonials" className="nav-link">Reviews</a>
         </div>
         <Link href="/auth/login" className="nav-cta">Sign In →</Link>
+        <button
+          className="nav-hamburger"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          <span style={mobileMenuOpen ? {transform:'rotate(45deg) translate(5px,5px)'} : {}} />
+          <span style={mobileMenuOpen ? {opacity:0} : {}} />
+          <span style={mobileMenuOpen ? {transform:'rotate(-45deg) translate(5px,-5px)'} : {}} />
+        </button>
       </nav>
+
+      {/* MOBILE MENU */}
+      <div className={`mobile-menu${mobileMenuOpen ? ' open' : ''}`}>
+        <a href="#features" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>Features</a>
+        <a href="#how-it-works" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>How It Works</a>
+        <a href="#pricing" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>Pricing</a>
+        <a href="#testimonials" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>Reviews</a>
+        <Link href="/auth/login" className="mobile-menu-cta" onClick={() => setMobileMenuOpen(false)}>Sign In →</Link>
+      </div>
 
       {/* HERO */}
       <section className="hero">
         <div className="hero-bg" />
         <div className="hero-grid" />
+
+        {/* LEFT: copy */}
         <div className="hero-content">
           <div className="hero-badge">
             <div className="hero-badge-dot" />
@@ -393,12 +500,8 @@ export default function LandingPage() {
             SmartIEP helps special education teachers generate comprehensive, legally compliant IEP drafts — complete with goals, services, accommodations, and progress monitoring — in under 5 minutes.
           </p>
           <div className="hero-actions">
-            <Link href="/auth/signup" className="btn-primary">
-              Start free →
-            </Link>
-            <a href="#how-it-works" className="btn-secondary">
-              See how it works ↓
-            </a>
+            <Link href="/auth/signup" className="btn-primary">Start free →</Link>
+            <a href="#how-it-works" className="btn-secondary">See how it works ↓</a>
           </div>
           <div className="hero-trust">
             <div className="hero-avatars">
@@ -411,7 +514,7 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* FLOATING IEP CARD */}
+        {/* RIGHT: IEP card */}
         <div className="hero-visual">
           <div style={{position: 'relative'}}>
             <div className="floating-chip chip-1">
@@ -429,7 +532,7 @@ export default function LandingPage() {
               </div>
               <div className="iep-section-label">Annual Goals</div>
               <div className="iep-goal">
-                <div className="iep-goal-dot" style={{background: '#185fa5'}} />
+                <div className="iep-goal-dot" style={{background: '#4a90d9'}} />
                 <div className="iep-goal-text">Jamie will use 3-word phrases to request preferred items with 80% accuracy across 3 sessions.</div>
               </div>
               <div className="iep-goal">
@@ -441,13 +544,13 @@ export default function LandingPage() {
                 <div className="iep-goal-text">Jamie will independently complete 4-step self-care routines with visual supports.</div>
               </div>
               <div className="iep-progress">
-                <div className="iep-section-label" style={{marginTop: '16px'}}>Progress — Q2 Report</div>
+                <div className="iep-section-label" style={{marginTop:'16px'}}>Progress — Q2 Report</div>
                 <div className="iep-progress-bar-bg"><div className="iep-progress-bar" /></div>
                 <div className="iep-progress-label"><span>3 domains · 6 goals</span><span>On Track ✓</span></div>
               </div>
             </div>
             <div className="floating-chip chip-2">
-              <div className="chip-dot" style={{background: '#185fa5'}} />
+              <div className="chip-dot" style={{background: '#4a90d9'}} />
               IDEA 2004 compliant draft
             </div>
           </div>
@@ -456,75 +559,41 @@ export default function LandingPage() {
 
       {/* PROOF BAR */}
       <div className="proof-bar">
-        <div className="proof-item"><span className="proof-icon">⚖️</span>IDEA 2004 Aligned</div>
-        <div className="proof-item"><span className="proof-icon">🔒</span>Secure & FERPA-Aware</div>
-        <div className="proof-item"><span className="proof-icon">🧠</span>Powered by Claude AI</div>
-        <div className="proof-item"><span className="proof-icon">⚡</span>Draft in Under 5 Minutes</div>
-        <div className="proof-item"><span className="proof-icon">💡</span>Built by SPED Educators</div>
+        {[
+          { icon: '🏫', text: 'Built by SPED Educators' },
+          { icon: '⚡', text: 'IEP draft in under 5 minutes' },
+          { icon: '📋', text: 'IDEA 2004 aligned' },
+          { icon: '🔒', text: 'FERPA-aware design' },
+          { icon: '📊', text: 'Progress monitoring built-in' },
+        ].map((p, i) => (
+          <div key={i} className="proof-item">
+            <span className="proof-icon">{p.icon}</span>
+            {p.text}
+          </div>
+        ))}
       </div>
 
       {/* FEATURES */}
-      <section className="section" id="features">
-        <div className="section-label">What You Get</div>
-        <h2 className="section-h2">Everything a special ed teacher needs in one place.</h2>
-        <p className="section-sub">From IEP generation to year-round progress monitoring — SmartIEP supports the full IEP lifecycle, not just the first draft.</p>
-
+      <section className="section" id="features" style={{background:'white'}}>
+        <div className="section-label">Everything You Need</div>
+        <h2 className="section-h2">Built for the realities of SPED teaching</h2>
+        <p className="section-sub">Every feature was designed by and for special educators — not generic AI tools retrofitted for education.</p>
         <div className="features-grid">
           {[
-            {
-              icon: '✨', title: 'AI-Generated IEP Drafts',
-              desc: 'Enter your assessment data and receive a complete IEP in minutes — PLAAFP narrative, measurable annual goals, services, accommodations, LRE statement, and progress monitoring plan.',
-              tag: 'Core Feature',
-              accent: '#185fa5', accentLight: '#e8f0fb'
-            },
-            {
-              icon: '🎯', title: 'SMART Goals for Every Domain',
-              desc: 'Goals are generated with observable behaviors, measurable criteria, conditions, and timeframes. Short-term benchmarks and success criteria included for each goal.',
-              tag: 'IDEA Compliant',
-              accent: '#5dcaa5', accentLight: '#e1f5ee'
-            },
-            {
-              icon: '📈', title: 'Progress Monitoring',
-              desc: 'Log structured progress notes per goal throughout the year. Track On Track / Emerging / Not Yet / Mastered status with a full data timeline per domain.',
-              tag: 'Pro Feature',
-              accent: '#7f77dd', accentLight: '#eeedfe'
-            },
-            {
-              icon: '📊', title: 'AI Progress Reports',
-              desc: 'Generate formal quarterly progress reports with one click. Claude synthesizes your progress notes into a parent-ready narrative with data references and goal recommendations.',
-              tag: 'Pro Feature',
-              accent: '#d85a30', accentLight: '#faeee8'
-            },
-            {
-              icon: '⬇️', title: 'Data Export for Any System',
-              desc: 'Export IEP and progress data in formats compatible with Frontline, IEP Direct, Skyward, PowerSchool, SPED-i, Edio, or as a universal CSV.',
-              tag: 'Pro Feature',
-              accent: '#0f6e56', accentLight: '#e1f5ee'
-            },
-            {
-              icon: '✏️', title: 'Inline Editing & Version History',
-              desc: 'Click any section to edit it directly. Every regeneration auto-saves the previous version — so you never lose a draft and can compare across the school year.',
-              tag: 'Core Feature',
-              accent: '#993c1d', accentLight: '#faece7'
-            },
-            {
-              icon: '📦', title: 'Student Roster Management',
-              desc: 'Manage your full caseload in one place. Archive students at year end instead of deleting — their IEP records and progress history are always preserved.',
-              tag: 'Core Feature',
-              accent: '#185fa5', accentLight: '#e8f0fb'
-            },
-            {
-              icon: '🔒', title: 'Secure & Private by Design',
-              desc: 'Your students are completely private. Row-level database security, HTTPS encryption, no data sharing, and no use of your data to train AI models.',
-              tag: 'FERPA-Aware',
-              accent: '#374151', accentLight: '#f3f4f6'
-            },
+            { icon: '🧠', title: 'AI Goal Generation', desc: 'SMART goals auto-generated from present level data across all 5 developmental domains.', tag: 'Core Feature', tagClass: 'tag-core' },
+            { icon: '📋', title: 'IDEA 2004 Alignment', desc: 'Every output maps to federal compliance requirements — goals, services, and accommodations.', tag: 'IDEA Compliant', tagClass: 'tag-idea' },
+            { icon: '📈', title: 'Progress Monitoring', desc: 'Track goal progress quarterly. Generate AI progress reports from your data.', tag: 'Core Feature', tagClass: 'tag-core' },
+            { icon: '📤', title: 'PDF & Data Export', desc: 'Export to print-ready PDF or structured data for your district system.', tag: 'Core Feature', tagClass: 'tag-core' },
+            { icon: '👨‍👩‍👧', title: 'Multi-Student Roster', desc: 'Manage all your students in one place with full IEP history and version tracking.', tag: 'Core Feature', tagClass: 'tag-core' },
+            { icon: '♿', title: 'Accommodations Library', desc: 'Pre-built, categorized accommodations — with AI suggestions based on disability profile.', tag: 'Core Feature', tagClass: 'tag-core' },
+            { icon: '🔁', title: 'Iterative Editing', desc: 'Regenerate individual sections without losing the rest. Refine until it\'s exactly right.', tag: 'Pro Feature', tagClass: 'tag-pro' },
+            { icon: '🗃️', title: 'Student Archiving', desc: 'Archive students at year-end to preserve records without cluttering your active roster.', tag: 'Pro Feature', tagClass: 'tag-pro' },
           ].map((f, i) => (
-            <div key={i} className="feature-card" style={{'--accent': f.accent, '--accent-light': f.accentLight} as React.CSSProperties}>
+            <div key={i} className="feature-card">
               <div className="feature-icon">{f.icon}</div>
-              <h3 className="feature-h3">{f.title}</h3>
-              <p className="feature-p">{f.desc}</p>
-              <span className="feature-tag">{f.tag}</span>
+              <div className="feature-title">{f.title}</div>
+              <div className="feature-desc">{f.desc}</div>
+              <span className={`feature-tag ${f.tagClass}`}>{f.tag}</span>
             </div>
           ))}
         </div>
@@ -533,21 +602,20 @@ export default function LandingPage() {
       {/* HOW IT WORKS */}
       <section className="how-section" id="how-it-works">
         <div className="section-label">How It Works</div>
-        <h2 className="section-h2">From assessment notes to complete IEP — in 5 steps.</h2>
-        <p className="section-sub">Designed around how special education teachers actually work, not how software engineers think they work.</p>
+        <h2 className="section-h2">From student data to complete IEP draft in 5 steps</h2>
         <div className="steps">
           {[
-            { num: '01', title: 'Add your student', desc: 'Enter name, grade, disability category, parent contacts, and meeting dates. Takes about 2 minutes.' },
-            { num: '02', title: 'Describe present levels', desc: 'Paste your assessment notes across up to 5 domains. The more specific your data, the stronger the goals Claude generates.' },
-            { num: '03', title: 'Add context & priorities', desc: 'Share student strengths, areas of concern, family priorities, and current services. This is what makes the IEP feel truly individualized.' },
-            { num: '04', title: 'Generate & refine', desc: 'Claude drafts a complete IDEA-compliant IEP in under 90 seconds. Click to edit any section, then export or print for your team review.' },
-            { num: '05', title: 'Monitor & report progress', desc: 'Log progress notes throughout the year. Generate AI-powered quarterly reports. Export data to your district\'s system when required.' },
-          ].map((s, i) => (
+            { n: '01', title: 'Add Your Student', desc: 'Enter basic info, disability category, and grade level.' },
+            { n: '02', title: 'Enter Present Levels', desc: 'Describe performance in cognitive, communication, social, adaptive, and motor domains.' },
+            { n: '03', title: 'Review Context', desc: 'Add strengths, concerns, family priorities, and current services.' },
+            { n: '04', title: 'Generate IEP', desc: 'AI produces goals, services, accommodations, and progress plans in under a minute.' },
+            { n: '05', title: 'Track Progress', desc: 'Log quarterly data and generate progress reports for parent conferences.' },
+          ].map((s, i, arr) => (
             <div key={i} className="step">
-              <div className="step-num">{s.num}</div>
-              <h3 className="step-h3">{s.title}</h3>
-              <p className="step-p">{s.desc}</p>
-              {i < 4 && <div className="step-connector" />}
+              {i < arr.length - 1 && <div className="step-connector" />}
+              <div className="step-num">{s.n}</div>
+              <div className="step-title">{s.title}</div>
+              <div className="step-desc">{s.desc}</div>
             </div>
           ))}
         </div>
@@ -555,35 +623,40 @@ export default function LandingPage() {
 
       {/* BUILT BY SPED */}
       <section className="sped-section">
-        <div className="sped-inner">
-          <div className="sped-badge">💡 Built by the SPED Community</div>
-          <h2 className="sped-h2">We know what it feels like to miss a weekend because of IEPs.</h2>
-          <p className="sped-p">
-            SmartIEP wasn't built by a Silicon Valley startup that stumbled onto education. It was built by someone who has sat where you sit — writing IEPs at 10pm on a Sunday, managing a caseload of 15 students, and wondering why the tools available to teachers are so far behind.
-          </p>
-          <p className="sped-p">
-            Every feature in SmartIEP exists because a real special education teacher needed it. The 5-domain present levels structure, the SMART goal format, the quarterly progress report, the export formats for Frontline and Skyward — none of that came from a product manager's roadmap. It came from experience in the field.
-          </p>
+        <div className="sped-content">
+          <div className="sped-label">Our Story</div>
+          <h2 className="sped-h2">Made by teachers who lived the paperwork burden.</h2>
+          <p className="sped-sub">SmartIEP was built by special educators who spent nights and weekends writing IEPs instead of planning instruction. We know what teachers actually need — and what generic AI tools get wrong.</p>
           <div className="sped-pills">
-            {['Built by a SPED educator', 'IDEA 2004 compliant', 'Designed for real caseloads', 'Respects your professional judgment', 'Supports all disability categories', 'Early Intervention through Transition'].map((p, i) => (
-              <span key={i} className="sped-pill">✓ {p}</span>
+            {['Special Education Teachers', 'School Psychologists', 'Speech-Language Pathologists', 'Occupational Therapists', 'IDEA 2004 Experts'].map((pill, i) => (
+              <span key={i} className="sped-pill">{pill}</span>
             ))}
+          </div>
+        </div>
+        <div className="sped-quote">
+          <p className="sped-quote-text">"I used to spend my entire Sunday writing IEPs. Now I spend 20 minutes reviewing them. SmartIEP gave me my weekends back."</p>
+          <div className="sped-quote-author">
+            <div className="sped-quote-avatar">KL</div>
+            <div>
+              <div className="sped-quote-name">Kara L.</div>
+              <div className="sped-quote-role">Resource Room Teacher · 9 years experience</div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* TESTIMONIALS */}
       <section className="testimonials-section" id="testimonials">
-        <div className="section-label">Teacher Reviews</div>
-        <h2 className="section-h2">What educators are saying.</h2>
+        <div style={{textAlign:'center'}}>
+          <div className="section-label">From Teachers</div>
+          <h2 className="section-h2">What educators are saying</h2>
+        </div>
         <div className="testimonials-grid">
           {[
-            { quote: "I used to spend my entire Sunday writing IEPs. With SmartIEP, I have a solid draft done before lunch on Friday. The goals it generates are specific, measurable, and actually match what I wrote in the present levels.", name: 'Sarah L.', role: 'Special Education Teacher · K-2', initials: 'SL', bg: '#e8f0fb', color: '#185fa5', badge: 'Verified Teacher' },
-            { quote: "The progress monitoring tab changed how I track data. I used to keep everything in separate spreadsheets. Now I log notes directly against each goal and generate a quarterly report with one click.", name: 'Marcus R.', role: 'Autism Support Teacher · Grades 3-5', initials: 'MR', bg: '#e1f5ee', color: '#0f6e56', badge: 'Verified Teacher' },
-            { quote: "I was skeptical about AI-generated IEPs, but the quality genuinely surprised me. It understood the nuance between the domains and didn't just repeat the same goal five times. I still review everything, but it cuts my time in half.", name: 'Jennifer P.', role: 'Resource Room Teacher · Middle School', initials: 'JP', bg: '#faeee8', color: '#993c1d', badge: 'Verified Teacher' },
-            { quote: "The data export feature is what sold me. Our district uses Frontline and having a properly formatted CSV instead of manual re-entry saves me an hour per student at reporting time.", name: 'Kevin T.', role: 'Special Ed Coordinator · Elementary', initials: 'KT', bg: '#eeedfe', color: '#534ab7', badge: 'Administrator' },
-            { quote: "Our district has been pushing for better PLAAFP narratives. SmartIEP generates them with the kind of specific, data-driven language our director wants to see. It's made a huge difference in our compliance reviews.", name: 'Diana M.', role: 'Special Education Director', initials: 'DM', bg: '#e8f0fb', color: '#185fa5', badge: 'District Leader' },
-            { quote: "I work with students who have multiple disabilities and complex profiles. When you give it detailed present level data, it does a remarkable job capturing the nuance across all five domains.", name: 'Rosa C.', role: 'Multiple Disabilities Specialist', initials: 'RC', bg: '#e1f5ee', color: '#085041', badge: 'Verified Teacher' },
+            { quote: "I have 22 students on my caseload. Before SmartIEP, IEP season felt impossible. Now I actually have time to individualize each one properly.", name: 'Sarah T.', role: 'Special Education Resource Teacher', initials: 'ST', bg: '#e8f0fb', color: '#185fa5', badge: 'Verified Teacher' },
+            { quote: "The goals it generates are genuinely good — specific, measurable, and actually appropriate for my students' profiles. I'm not starting from scratch anymore.", name: 'Marcus J.', role: 'Autism Support Specialist', initials: 'MJ', bg: '#e1f5ee', color: '#085041', badge: 'Verified Teacher' },
+            { quote: "My IEPs now pass compliance review consistently. SmartIEP generates the kind of specific, data-driven language our director wants to see.", name: 'Diana M.', role: 'Special Education Director', initials: 'DM', bg: '#fef9e7', color: '#9a6e00', badge: 'District Leader' },
+            { quote: "I work with students who have complex profiles across multiple domains. SmartIEP captures the nuance when you give it detailed present level data.", name: 'Rosa C.', role: 'Multiple Disabilities Specialist', initials: 'RC', bg: '#e8f0fb', color: '#185fa5', badge: 'Verified Teacher' },
           ].map((t, i) => (
             <div key={i} className="testimonial-card">
               <div className="testimonial-stars">★★★★★</div>
@@ -622,85 +695,63 @@ export default function LandingPage() {
       <section className="pricing-section" id="pricing">
         <div className="section-label">Simple Pricing</div>
         <h2 className="section-h2">Start free. Upgrade when you're ready.</h2>
-        <p className="section-sub" style={{margin: '0 auto', textAlign: 'center'}}>No credit card required to get started. Free tier includes everything you need to try SmartIEP with your first students.</p>
-
+        <p className="section-sub" style={{margin:'0 auto',textAlign:'center'}}>No credit card required to get started.</p>
         <div className="pricing-cards">
           {/* Free */}
           <div className="pricing-card">
             <div className="pricing-tier">Free</div>
             <div className="pricing-price">$0</div>
-            <div className="pricing-period">forever</div>
+            <div className="pricing-period">forever free</div>
+            <div className="pricing-divider" />
             <ul className="pricing-features">
-              <li><span className="pricing-check">✓</span> 3 IEP generations</li>
-              <li><span className="pricing-check">✓</span> Up to 3 students</li>
-              <li><span className="pricing-check">✓</span> Inline editing</li>
-              <li><span className="pricing-check">✓</span> Print & HTML export</li>
-              <li><span className="pricing-check">✓</span> Version history</li>
-              <li><span className="pricing-lock">🔒</span> Progress monitoring</li>
-              <li><span className="pricing-lock">🔒</span> AI progress reports</li>
-              <li><span className="pricing-lock">🔒</span> Data export (CSV)</li>
+              {['Up to 3 students','IEP generation','PDF export','Basic accommodations library','Email support'].map((f, i) => (
+                <li key={i}><span className="pricing-check">✓</span>{f}</li>
+              ))}
+              {['Unlimited students','Progress monitoring','AI progress reports','Priority support'].map((f, i) => (
+                <li key={i} className="locked"><span className="pricing-lock">🔒</span>{f}</li>
+              ))}
             </ul>
-            <Link href="/auth/signup" className="pricing-btn">Get started free</Link>
+            <Link href="/auth/signup" className="pricing-btn pricing-btn-free">Get started free</Link>
           </div>
 
           {/* Pro */}
           <div className="pricing-card featured">
             <div className="pricing-badge">Most Popular</div>
-            <div className="pricing-tier">Pro</div>
-            <div className="pricing-price" style={{color: 'white'}}>$12</div>
-            <div className="pricing-period">per month · or $99/year</div>
+            <div className="pricing-tier light">Pro</div>
+            <div className="pricing-price light">$12</div>
+            <div className="pricing-period light">per month</div>
+            <div className="pricing-divider light" />
             <ul className="pricing-features">
-              <li><span className="pricing-check">✓</span> Unlimited IEP generations</li>
-              <li><span className="pricing-check">✓</span> Unlimited students</li>
-              <li><span className="pricing-check">✓</span> Inline editing</li>
-              <li><span className="pricing-check">✓</span> Print & HTML export</li>
-              <li><span className="pricing-check">✓</span> Version history</li>
-              <li><span className="pricing-check">✓</span> Progress monitoring</li>
-              <li><span className="pricing-check">✓</span> AI progress reports</li>
-              <li><span className="pricing-check">✓</span> Data export (7 systems)</li>
+              {['Unlimited students','IEP generation','PDF + data export','Full accommodations library','Progress monitoring & reports','AI progress report generation','Student archiving','Priority support'].map((f, i) => (
+                <li key={i} className="light"><span className="pricing-check light">✓</span>{f}</li>
+              ))}
             </ul>
-            <Link href="/auth/signup" className="pricing-btn featured">Start with Pro</Link>
+            <Link href="/auth/signup" className="pricing-btn pricing-btn-pro">Start free trial</Link>
           </div>
         </div>
-
-        <p style={{textAlign: 'center', marginTop: '32px', fontSize: '14px', color: '#888'}}>
-          Questions about school or district pricing? <a href="mailto:hello@smartiep.co" style={{color: '#185fa5'}}>Contact us →</a>
-        </p>
       </section>
 
       {/* CTA */}
       <section className="cta-section">
-        <div className="section-label">Get Started Today</div>
-        <h2 className="section-h2">Your students deserve a teacher who isn't buried in paperwork.</h2>
-        <p className="section-sub">Create your free account and generate your first IEP draft in under 5 minutes. No credit card required.</p>
-        <div className="cta-actions">
-          <Link href="/auth/signup" className="btn-primary">Create free account →</Link>
-          <Link href="/auth/login" className="btn-outline">Sign in</Link>
-        </div>
-        <p className="cta-note">⚠️ All AI-generated IEP content must be reviewed by qualified special education professionals before use.</p>
+        <h2 className="cta-h2">Stop spending evenings writing IEPs.</h2>
+        <p className="cta-sub">Join hundreds of special education teachers who reclaimed their time with SmartIEP.</p>
+        <Link href="/auth/signup" className="cta-btn">Get started free →</Link>
+        <p className="cta-fine">No credit card required · Free plan available · Cancel anytime</p>
       </section>
 
       {/* FOOTER */}
       <footer className="footer">
-        <div>
-          <div style={{display:'flex',alignItems:'center',gap:'8px',marginBottom:'8px'}}>
-            <span style={{fontSize:'20px'}}>💡</span>
-            <span className="footer-logo">SmartIEP<span>.co</span></span>
-          </div>
-          <div style={{marginTop: '4px', fontSize: '13px'}}>AI-assisted IEP planning for special educators.</div>
-        </div>
+        <div className="footer-logo">SmartIEP<span>.co</span></div>
         <div className="footer-links">
+          <a href="#features" className="footer-link">Features</a>
+          <a href="#pricing" className="footer-link">Pricing</a>
           <Link href="/auth/login" className="footer-link">Sign In</Link>
-          <Link href="/auth/signup" className="footer-link">Create Account</Link>
-          <a href="mailto:hello@smartiep.co" className="footer-link">Contact</a>
-          <Link href="/legal/privacy" className="footer-link">Privacy</Link>
-          <Link href="/legal/terms" className="footer-link">Terms</Link>
-          <Link href="/legal/ferpa" className="footer-link">FERPA</Link>
+          <Link href="/auth/signup" className="footer-link">Sign Up</Link>
         </div>
-        <div className="footer-copy">© {new Date().getFullYear()} SmartIEP. All rights reserved.</div>
+        <span className="footer-copy">© {new Date().getFullYear()} SmartIEP</span>
       </footer>
       <div className="disclaimer">
-        SmartIEP is an AI-assisted drafting tool. All generated content must be reviewed and approved by qualified special education professionals before implementation. SmartIEP does not provide legal, clinical, or educational advice.
+        SmartIEP generates AI-assisted draft content only. All IEPs must be reviewed, edited, and approved by qualified special education professionals before implementation. SmartIEP is not a substitute for professional judgment. This tool is designed to assist, not replace, the IEP team process required under IDEA 2004.
       </div>
     </div>
   );
