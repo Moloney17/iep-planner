@@ -386,12 +386,23 @@ export default function LandingPage() {
 
         /* ─── RESPONSIVE: 1024px ─────────────────────────── */
         @media (max-width: 1024px) {
-          .hero { gap: 36px; }
-          .hero-visual { width: 320px; }
-          .steps { grid-template-columns: repeat(3, 1fr); }
-          .steps .step:nth-child(3) .step-connector { display: none; }
-        }
+  .hero {
+    gap: 32px;
+    padding: 90px 32px 60px;
+    min-height: auto;
+  }
+  .hero-visual { width: 300px; }
+  .steps { grid-template-columns: repeat(3, 1fr); }
+  .steps .step:nth-child(3) .step-connector { display: none; }
+}
 
+@media (max-width: 1024px) and (orientation: landscape) {
+  .hero {
+    padding-top: 80px;
+    min-height: auto;
+    align-items: flex-start;
+  }
+}
         /* ─── RESPONSIVE: 900px ──────────────────────────── */
         @media (max-width: 900px) {
           .nav { padding: 16px 24px; }
