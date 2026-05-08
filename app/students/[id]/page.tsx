@@ -68,13 +68,17 @@ export default function StudentPage() {
     if (!displayedIEP) return;
     setIsExporting(true);
     try {
-      const res = await fetch('/api/export-pdf', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ student, iep: displayedIEP }) });
-      const html = await res.text();
-      const blob = new Blob([html], { type: 'text/html' });
+      const res = await fetch('/api/export-docx', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ student, iep: displayedIEP }),
+      });
+      if (!res.ok) throw new Error('Export failed');
+      const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `IEP_${student.name.replace(/\s+/g, '_')}.html`;
+      a.download = `IEP_${student.name.replace(/\s+/g, '_')}.docx`;
       a.click();
       URL.revokeObjectURL(url);
     } catch { alert('Export failed. Please try again.'); }
@@ -177,7 +181,7 @@ export default function StudentPage() {
             {displayedIEP && (
               <>
                 <button onClick={handleExport} disabled={isExporting} className="text-sm text-green-700 hover:bg-green-50 border border-green-200 px-3 py-2 rounded-lg transition-colors disabled:opacity-50">
-                  {isExporting ? '⏳...' : '⬇️ Export'}
+                  {isExporting ? '⏳...' : '📝 Word'}
                 </button>
                 <a href={`/students/${id}/pdf`} target="_blank" className="text-sm text-purple-700 hover:bg-purple-50 border border-purple-200 px-3 py-2 rounded-lg transition-colors">
                   📄 PDF
