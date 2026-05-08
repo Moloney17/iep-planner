@@ -516,8 +516,30 @@ export default function LandingPage() {
         ))}
       </div>
 
+      {/* HOW IT WORKS */}
+      <section className="how-section" id="how-it-works">
+        <div className="section-label">How It Works</div>
+        <h2 className="section-h2">From student data to complete IEP draft in 5 steps</h2>
+        <div className="steps">
+          {[
+            { n: '01', title: 'Add Your Student', desc: 'Enter basic info, disability category, and grade level.' },
+            { n: '02', title: 'Enter Present Levels', desc: 'Describe performance in cognitive, communication, social, adaptive, and motor domains.' },
+            { n: '03', title: 'Review Context', desc: 'Add strengths, concerns, family priorities, and current services.' },
+            { n: '04', title: 'Generate IEP', desc: 'AI produces goals, services, accommodations, and progress plans in under a minute.' },
+            { n: '05', title: 'Track Progress', desc: 'Log quarterly data and generate progress reports for parent conferences.' },
+          ].map((s, i, arr) => (
+            <div key={i} className="step">
+              {i < arr.length - 1 && <div className="step-connector" />}
+              <div className="step-num">{s.n}</div>
+              <div className="step-title">{s.title}</div>
+              <div className="step-desc">{s.desc}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* FEATURES */}
-      <section className="section" id="features" style={{background:'white'}}>
+      <section className="section" id="features" style={{background:'#f8f7f4'}}>
         <div className="section-label">Everything You Need</div>
         <h2 className="section-h2">Built for the realities of SPED teaching</h2>
         <p className="section-sub">Every feature was designed by and for special educators — not generic AI tools retrofitted for education.</p>
@@ -590,28 +612,6 @@ export default function LandingPage() {
             <span className="wtl-tag">✦ Full version history</span>
           </div>
 
-        </div>
-      </section>
-
-      {/* HOW IT WORKS */}
-      <section className="how-section" id="how-it-works">
-        <div className="section-label">How It Works</div>
-        <h2 className="section-h2">From student data to complete IEP draft in 5 steps</h2>
-        <div className="steps">
-          {[
-            { n: '01', title: 'Add Your Student', desc: 'Enter basic info, disability category, and grade level.' },
-            { n: '02', title: 'Enter Present Levels', desc: 'Describe performance in cognitive, communication, social, adaptive, and motor domains.' },
-            { n: '03', title: 'Review Context', desc: 'Add strengths, concerns, family priorities, and current services.' },
-            { n: '04', title: 'Generate IEP', desc: 'AI produces goals, services, accommodations, and progress plans in under a minute.' },
-            { n: '05', title: 'Track Progress', desc: 'Log quarterly data and generate progress reports for parent conferences.' },
-          ].map((s, i, arr) => (
-            <div key={i} className="step">
-              {i < arr.length - 1 && <div className="step-connector" />}
-              <div className="step-num">{s.n}</div>
-              <div className="step-title">{s.title}</div>
-              <div className="step-desc">{s.desc}</div>
-            </div>
-          ))}
         </div>
       </section>
 
