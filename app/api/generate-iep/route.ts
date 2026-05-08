@@ -9,28 +9,23 @@ export const maxDuration = 120;
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-// --- Rate limiting using a simple in-memory store ---
-// For production scale, swap this for Redis/Upstash
+// --- Rate limiting ---
 const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
-
-const DAILY_LIMIT = 5;        // max IEP generations per user per day
-const MINUTE_LIMIT = 3;       // max requests per IP per minute
 const minuteStore = new Map<string, { count: number; resetAt: number }>();
+const DAILY_LIMIT = 5;
+const MINUTE_LIMIT = 3;
 
 function checkDailyLimit(userId: string): { allowed: boolean; remaining: number } {
   const now = Date.now();
   const midnight = new Date();
   midnight.setHours(24, 0, 0, 0);
   const resetAt = midnight.getTime();
-
   const entry = rateLimitStore.get(userId);
   if (!entry || now > entry.resetAt) {
     rateLimitStore.set(userId, { count: 1, resetAt });
     return { allowed: true, remaining: DAILY_LIMIT - 1 };
   }
-  if (entry.count >= DAILY_LIMIT) {
-    return { allowed: false, remaining: 0 };
-  }
+  if (entry.count >= DAILY_LIMIT) return { allowed: false, remaining: 0 };
   entry.count++;
   return { allowed: true, remaining: DAILY_LIMIT - entry.count };
 }
@@ -48,7 +43,6 @@ function checkMinuteLimit(ip: string): boolean {
   return true;
 }
 
-// Clean up old entries every hour to prevent memory leak
 setInterval(() => {
   const now = Date.now();
   rateLimitStore.forEach((v, k) => { if (now > v.resetAt) rateLimitStore.delete(k); });
@@ -91,7 +85,7 @@ IMPORTANT: Use person-first language. Be specific and data-driven. Reflect famil
 
 export async function POST(request: NextRequest) {
   try {
-    // --- IP-based minute rate limit ---
+    // IP rate limit
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
     if (!checkMinuteLimit(ip)) {
       return NextResponse.json(
@@ -100,7 +94,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // --- Auth check + daily per-user rate limit ---
+    // Auth check
     const cookieStore = await cookies();
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -123,7 +117,7 @@ export async function POST(request: NextRequest) {
     const { allowed, remaining } = checkDailyLimit(user.id);
     if (!allowed) {
       return NextResponse.json(
-        { error: `You've reached your daily limit of ${DAILY_LIMIT} IEP generations. Your limit resets at midnight. Please try again tomorrow.` },
+        { error: `You've reached your daily limit of ${DAILY_LIMIT} IEP generations. Your limit resets at midnight.` },
         { status: 429 }
       );
     }
@@ -131,7 +125,7 @@ export async function POST(request: NextRequest) {
     const rawStudent = await request.json();
     const student: Student = sanitizeStudentData(rawStudent) as unknown as Student;
 
-    // Verify student belongs to requesting user
+    // Ownership check
     const { data: studentRecord, error: studentError } = await supabase
       .from('students')
       .select('id')
@@ -174,7 +168,7 @@ ENVIRONMENTAL/CONTEXTUAL FACTORS: ${student.environmentalFactors || 'Not specifi
 
 Identified areas needing goals: ${filledDomains.join(', ')}
 
-Return this exact JSON structure (no other text):
+Return this exact JSON structure (no other text, no markdown fences):
 {
   "plaafp": "Comprehensive PLAAFP narrative in 3-5 paragraphs.",
   "goals": [
@@ -209,65 +203,50 @@ Return this exact JSON structure (no other text):
   "lreStatement": "LRE justification"
 }`;
 
-    const response = await client.messages.create({
-      model: 'claude-opus-4-6',
-      max_tokens: 16000,
+    // ── STREAMING — pipes chunks directly to client so Vercel never times out ──
+    const stream = client.messages.stream({
+      model: 'claude-sonnet-4-6',  // faster than opus for same quality on structured output
+      max_tokens: 8000,            // reduced from 16000 — more than enough for a full IEP
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: prompt }],
     });
 
-    if (response.stop_reason === 'max_tokens') {
-      throw new Error('Response was too long to complete. Try filling in fewer domain fields at once.');
-    }
+    const encoder = new TextEncoder();
 
-    const textBlock = response.content.find(b => b.type === 'text');
-    if (!textBlock || textBlock.type !== 'text') {
-      throw new Error('Unexpected response format from Claude. Please try again.');
-    }
+    const readable = new ReadableStream({
+      async start(controller) {
+        try {
+          for await (const chunk of stream) {
+            if (chunk.type === 'content_block_delta' && chunk.delta.type === 'text_delta') {
+              controller.enqueue(encoder.encode(chunk.delta.text));
+            }
+          }
+          controller.close();
 
-    let rawText = textBlock.text.trim();
-    const fenceMatch = rawText.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/);
-    if (fenceMatch) rawText = fenceMatch[1];
+          // Log usage after stream completes (fire and forget)
+          supabase.from('usage_events').insert({
+            user_id: user.id,
+            event_type: 'iep_generated',
+            metadata: {
+              student_name: student.name,
+              grade: student.grade,
+              disability: student.disabilityCategory,
+            }
+          }).catch((e: unknown) => console.error('Usage log error:', e));
 
-    let iepData;
-    try {
-      iepData = JSON.parse(rawText);
-    } catch {
-      const match = rawText.match(/\{[\s\S]*\}/);
-      if (match) {
-        try { iepData = JSON.parse(match[0]); }
-        catch { throw new Error('Claude returned invalid JSON. Please try again.'); }
-      } else {
-        throw new Error('Claude did not return the expected format. Please try again.');
-      }
-    }
-
-    iepData.generatedAt = new Date().toISOString();
-    // Log usage event for admin dashboard
-    try {
-      await supabase.from('usage_events').insert({
-        user_id: user.id,
-        event_type: 'iep_generated',
-        metadata: {
-          student_name: student.name,
-          grade: student.grade,
-          disability: student.disabilityCategory,
+        } catch (err) {
+          controller.error(err);
         }
-      });
-    } catch (e) { console.error('Usage log error:', e); }
+      },
+    });
 
-    // Fire-and-forget admin notification
-    const baseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ? 'https://www.smartiep.co' : 'http://localhost:3000';
-    fetch(`${baseUrl}/api/notify`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Cookie': request.headers.get('cookie') || '' },
-      body: JSON.stringify({ type: 'iep_generated', data: { studentName: student.name, grade: student.grade, disability: student.disabilityCategory, studentId: student.id } }),
-    }).catch(() => {});
-
-
-    const res = NextResponse.json(iepData);
-    res.headers.set('X-RateLimit-Remaining', String(remaining));
-    return res;
+    return new Response(readable, {
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Cache-Control': 'no-cache',
+        'X-RateLimit-Remaining': String(remaining),
+      },
+    });
 
   } catch (error) {
     console.error('IEP generation error:', error);

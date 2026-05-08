@@ -117,7 +117,11 @@ export default function NewStudentPage() {
         accumulated += chunk;
         setStreamingText(accumulated);
       }
-      const iep = JSON.parse(accumulated.trim());
+      let rawText = accumulated.trim();
+      const fenceMatch = rawText.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/);
+      if (fenceMatch) rawText = fenceMatch[1];
+      const iep = JSON.parse(rawText);
+      iep.generatedAt = new Date().toISOString();
 
       await saveStudent({ ...student, generatedIEP: iep, updatedAt: new Date().toISOString() });
       router.push(`/students/${student.id}`);

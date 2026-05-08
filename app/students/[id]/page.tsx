@@ -116,14 +116,11 @@ export default function StudentPage() {
         setStreamingText(accumulated);
       }
 
-      // Parse the fully accumulated JSON
-      let iep: GeneratedIEP;
-      try {
-        iep = JSON.parse(accumulated);
-      } catch {
-        // Sometimes there's a tiny bit of extra whitespace — trim and retry
-        iep = JSON.parse(accumulated.trim());
-      }
+      let rawText = accumulated.trim();
+      const fenceMatch = rawText.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/);
+      if (fenceMatch) rawText = fenceMatch[1];
+      const iep: GeneratedIEP = JSON.parse(rawText);
+      iep.generatedAt = new Date().toISOString();
 
       const history = [...(student.iepHistory || [])];
       if (student.generatedIEP) history.push(student.generatedIEP);
