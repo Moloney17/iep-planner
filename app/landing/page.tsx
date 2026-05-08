@@ -86,8 +86,6 @@ export default function LandingPage() {
           background-image: linear-gradient(#1a1a2e 1px, transparent 1px), linear-gradient(90deg, #1a1a2e 1px, transparent 1px);
           background-size: 60px 60px;
         }
-
-        /* LEFT COLUMN */
         .hero-content {
           position: relative; z-index: 1;
           flex: 1; min-width: 0; max-width: 580px;
@@ -139,12 +137,7 @@ export default function LandingPage() {
         .hero-avatar.a2 { background: #4a90d9; }
         .hero-avatar.a3 { background: #5dcaa5; }
         .hero-avatar.a4 { background: #d85a30; }
-
-        /* RIGHT COLUMN – IEP card */
-        .hero-visual {
-          position: relative; z-index: 1;
-          width: 400px; flex-shrink: 0;
-        }
+        .hero-visual { position: relative; z-index: 1; width: 400px; flex-shrink: 0; }
         .iep-card {
           background: white; border-radius: 16px; padding: 24px;
           box-shadow: 0 20px 60px rgba(26,26,46,0.12), 0 2px 8px rgba(26,26,46,0.06);
@@ -223,212 +216,69 @@ export default function LandingPage() {
         .tag-pro { background: #e8f0fb; color: #185fa5; }
         .tag-idea { background: #fef9e7; color: #9a6e00; }
 
-<section style={{
-        background: '#1a1a2e',
-        padding: '100px 60px',
-      }}>
-        <style>{`
-          .wtl-label {
-            font-size: 12px; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 0.12em; color: #f5c842; margin-bottom: 16px;
-          }
-          .wtl-h2 {
-            font-family: Georgia, serif;
-            font-size: clamp(28px, 3vw, 42px);
-            font-weight: 700; color: #f8f7f4; line-height: 1.2;
-            margin-bottom: 60px; max-width: 560px;
-          }
-          .wtl-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-          }
-          .wtl-card {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 20px;
-            padding: 36px 32px;
-            display: flex; flex-direction: column; gap: 28px;
-            transition: background 0.2s;
-          }
-          .wtl-card:hover {
-            background: rgba(255,255,255,0.08);
-          }
-          .wtl-fear {
-            background: rgba(0,0,0,0.25);
-            border-left: 3px solid rgba(255,255,255,0.15);
-            border-radius: 0 10px 10px 0;
-            padding: 16px 18px;
-          }
-          .wtl-fear-label {
-            font-size: 10px; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 0.1em; color: rgba(248,247,244,0.35);
-            margin-bottom: 8px;
-          }
-          .wtl-fear-text {
-            font-family: Georgia, serif; font-style: italic;
-            font-size: 14px; line-height: 1.7;
-            color: rgba(248,247,244,0.55);
-          }
-          .wtl-arrow {
-            font-size: 20px; color: var(--wtl-accent);
-            align-self: flex-start;
-          }
-          .wtl-solution-label {
-            font-size: 10px; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 0.1em; color: var(--wtl-accent);
-            margin-bottom: 10px;
-          }
-          .wtl-solution-title {
-            font-family: Georgia, serif; font-size: 20px; font-weight: 700;
-            color: #f8f7f4; line-height: 1.3; margin-bottom: 10px;
-          }
-          .wtl-solution-desc {
-            font-size: 14px; line-height: 1.75;
-            color: rgba(248,247,244,0.65);
-          }
-          .wtl-tag {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: rgba(248,247,244,0.6);
-            padding: 5px 12px; border-radius: 100px;
-            font-size: 12px; font-weight: 500;
-            margin-top: auto; align-self: flex-start;
-          }
+        /* ─── WHAT TEACHERS LOVE ──────────────────────────── */
+        .wtl-section { background: #1a1a2e; padding: 100px 60px; }
+        .wtl-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #f5c842; margin-bottom: 16px; }
+        .wtl-h2 { font-family: Georgia, serif; font-size: clamp(28px, 3vw, 42px); font-weight: 700; color: #f8f7f4; line-height: 1.2; margin-bottom: 60px; max-width: 560px; }
+        .wtl-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .wtl-card {
+          background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+          border-radius: 20px; padding: 36px 32px;
+          display: flex; flex-direction: column; gap: 28px; transition: background 0.2s;
+        }
+        .wtl-card:hover { background: rgba(255,255,255,0.08); }
+        .wtl-fear {
+          background: rgba(0,0,0,0.25); border-left: 3px solid rgba(255,255,255,0.15);
+          border-radius: 0 10px 10px 0; padding: 16px 18px;
+        }
+        .wtl-fear-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(248,247,244,0.35); margin-bottom: 8px; }
+        .wtl-fear-text { font-family: Georgia, serif; font-style: italic; font-size: 14px; line-height: 1.7; color: rgba(248,247,244,0.55); }
+        .wtl-arrow { font-size: 20px; color: var(--wtl-accent); align-self: flex-start; }
+        .wtl-solution-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--wtl-accent); margin-bottom: 10px; }
+        .wtl-solution-title { font-family: Georgia, serif; font-size: 20px; font-weight: 700; color: #f8f7f4; line-height: 1.3; margin-bottom: 10px; }
+        .wtl-solution-desc { font-size: 14px; line-height: 1.75; color: rgba(248,247,244,0.65); }
+        .wtl-tag {
+          display: inline-flex; align-items: center; gap: 6px;
+          background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+          color: rgba(248,247,244,0.6); padding: 5px 12px; border-radius: 100px;
+          font-size: 12px; font-weight: 500; margin-top: auto; align-self: flex-start;
+        }
 
-          @media (max-width: 900px) {
-            .wtl-grid { grid-template-columns: 1fr; }
-            section.wtl-section { padding: 72px 24px !important; }
-          }
-        `}</style>
-
-        <div className="wtl-label">What Teachers Actually Love</div>
-        <h2 className="wtl-h2">The things teachers tell us they didn't expect — but can't live without.</h2>
-
-        <div className="wtl-grid">
-
-          {/* Card 1 — Regenerate sections */}
-          <div className="wtl-card" style={{'--wtl-accent': '#5dcaa5'} as React.CSSProperties}>
-            <div className="wtl-fear">
-              <div className="wtl-fear-label">The fear before SmartIEP</div>
-              <p className="wtl-fear-text">"What if the AI writes one bad goal? Do I have to throw out the whole IEP and start over?"</p>
-            </div>
-            <div className="wtl-arrow">↓</div>
-            <div>
-              <div className="wtl-solution-label">The reality</div>
-              <div className="wtl-solution-title">Regenerate any section independently.</div>
-              <p className="wtl-solution-desc">Not happy with the communication goals? Regenerate just those — without touching the PLAAFP, services, or accommodations you already approved. Nothing is ever all-or-nothing.</p>
-            </div>
-            <span className="wtl-tag">✦ No all-or-nothing rewrites</span>
-          </div>
-
-          {/* Card 2 — AI progress reports */}
-          <div className="wtl-card" style={{'--wtl-accent': '#f5c842'} as React.CSSProperties}>
-            <div className="wtl-fear">
-              <div className="wtl-fear-label">The fear before SmartIEP</div>
-              <p className="wtl-fear-text">"OK the IEP is done — but I still have to write quarterly progress reports for every single goal."</p>
-            </div>
-            <div className="wtl-arrow">↓</div>
-            <div>
-              <div className="wtl-solution-label">The reality</div>
-              <div className="wtl-solution-title">Log data. Get a report. Done.</div>
-              <p className="wtl-solution-desc">Track progress notes throughout the year, then generate a complete AI-written quarterly progress report from your data in seconds — ready to share with families at conferences.</p>
-            </div>
-            <span className="wtl-tag">✦ Quarterly reports in seconds</span>
-          </div>
-
-          {/* Card 3 — Version history */}
-          <div className="wtl-card" style={{'--wtl-accent': '#4a90d9'} as React.CSSProperties}>
-            <div className="wtl-fear">
-              <div className="wtl-fear-label">The fear before SmartIEP</div>
-              <p className="wtl-fear-text">"I keep multiple Word doc versions because I'm terrified of losing a draft I spent hours on."</p>
-            </div>
-            <div className="wtl-arrow">↓</div>
-            <div>
-              <div className="wtl-solution-label">The reality</div>
-              <div className="wtl-solution-title">Every version is saved. Forever.</div>
-              <p className="wtl-solution-desc">SmartIEP keeps your complete IEP history — every draft, every revision, every generated version. Nothing is ever overwritten. Go back to any previous version whenever you need it.</p>
-            </div>
-            <span className="wtl-tag">✦ Full version history</span>
-          </div>
-
-        </div>
-      </section>
-       
- /* ─── HOW IT WORKS ────────────────────────────────── */
+        /* ─── HOW IT WORKS ────────────────────────────────── */
         .how-section { background: white; padding: 100px 60px; }
         .steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 28px; margin-top: 56px; }
         .step { position: relative; }
-        .step-connector {
-          position: absolute; top: 26px; right: -14px; width: 28px; height: 1px;
-          background: rgba(245,200,66,0.25);
-        }
-        .step-num {
-          font-family: Georgia, serif; font-size: 44px; font-weight: 700;
-          color: rgba(245,200,66,0.25); line-height: 1; margin-bottom: 12px;
-        }
+        .step-connector { position: absolute; top: 26px; right: -14px; width: 28px; height: 1px; background: rgba(245,200,66,0.25); }
+        .step-num { font-family: Georgia, serif; font-size: 44px; font-weight: 700; color: rgba(245,200,66,0.25); line-height: 1; margin-bottom: 12px; }
         .step-title { font-weight: 700; font-size: 15px; color: #1a1a2e; margin-bottom: 8px; }
         .step-desc { font-size: 13px; color: #666; line-height: 1.6; }
 
         /* ─── BUILT BY SPED ───────────────────────────────── */
-        .sped-section {
-          background: #1a1a2e; padding: 100px 60px;
-          display: flex; align-items: center; gap: 80px; flex-wrap: wrap;
-        }
+        .sped-section { background: #1a1a2e; padding: 100px 60px; display: flex; align-items: center; gap: 80px; flex-wrap: wrap; }
         .sped-content { flex: 1; min-width: 280px; }
         .sped-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #f5c842; margin-bottom: 16px; }
         .sped-h2 { font-family: Georgia, serif; font-size: clamp(26px, 2.8vw, 38px); font-weight: 700; color: #f8f7f4; line-height: 1.25; margin-bottom: 20px; }
         .sped-sub { font-size: 16px; color: rgba(248,247,244,0.65); line-height: 1.7; }
         .sped-pills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 32px; }
-        .sped-pill {
-          background: rgba(248,247,244,0.08); border: 1px solid rgba(248,247,244,0.15);
-          color: rgba(248,247,244,0.8); padding: 7px 16px; border-radius: 100px;
-          font-size: 13px; font-weight: 500;
-        }
+        .sped-pill { background: rgba(248,247,244,0.08); border: 1px solid rgba(248,247,244,0.15); color: rgba(248,247,244,0.8); padding: 7px 16px; border-radius: 100px; font-size: 13px; font-weight: 500; }
         .sped-quote { flex: 1; min-width: 280px; max-width: 420px; }
-        .sped-quote-text {
-          font-family: Georgia, serif; font-size: 19px; font-style: italic;
-          color: rgba(248,247,244,0.9); line-height: 1.7; margin-bottom: 24px;
-        }
+        .sped-quote-text { font-family: Georgia, serif; font-size: 19px; font-style: italic; color: rgba(248,247,244,0.9); line-height: 1.7; margin-bottom: 24px; }
         .sped-quote-author { display: flex; align-items: center; gap: 14px; }
-        .sped-quote-avatar {
-          width: 48px; height: 48px; border-radius: 50%; background: #f5c842;
-          display: flex; align-items: center; justify-content: center;
-          font-size: 16px; font-weight: 700; color: #1a1a2e; flex-shrink: 0;
-        }
+        .sped-quote-avatar { width: 48px; height: 48px; border-radius: 50%; background: #f5c842; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #1a1a2e; flex-shrink: 0; }
         .sped-quote-name { font-weight: 700; color: #f8f7f4; font-size: 14px; }
         .sped-quote-role { font-size: 12px; color: rgba(248,247,244,0.5); margin-top: 3px; }
 
         /* ─── TESTIMONIALS ────────────────────────────────── */
         .testimonials-section { padding: 100px 60px; background: #f8f7f4; }
-        .testimonials-grid {
-          display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-          gap: 20px; margin-top: 56px;
-        }
-        .testimonial-card {
-          background: white; border-radius: 16px; padding: 28px;
-          border: 1px solid rgba(26,26,46,0.07);
-          display: flex; flex-direction: column; gap: 18px;
-        }
+        .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 56px; }
+        .testimonial-card { background: white; border-radius: 16px; padding: 28px; border: 1px solid rgba(26,26,46,0.07); display: flex; flex-direction: column; gap: 18px; }
         .testimonial-stars { color: #f0a500; font-size: 15px; letter-spacing: 2px; }
-        .testimonial-quote {
-          font-family: Georgia, serif; font-size: 15px; line-height: 1.8;
-          color: #333; font-style: italic; flex: 1;
-        }
+        .testimonial-quote { font-family: Georgia, serif; font-size: 15px; line-height: 1.8; color: #333; font-style: italic; flex: 1; }
         .testimonial-author { display: flex; align-items: center; gap: 12px; }
-        .testimonial-avatar {
-          width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
-          background: var(--av-bg, #e8f0fb);
-          display: flex; align-items: center; justify-content: center;
-          font-size: 13px; font-weight: 700; color: var(--av-color, #185fa5);
-        }
+        .testimonial-avatar { width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; background: var(--av-bg, #e8f0fb); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--av-color, #185fa5); }
         .testimonial-name { font-weight: 700; font-size: 14px; color: #1a1a2e; }
         .testimonial-role { font-size: 12px; color: #888; margin-top: 2px; }
-        .testimonial-badge {
-          font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 100px;
-          background: #e8f0fb; color: #185fa5; margin-left: auto; white-space: nowrap;
-        }
+        .testimonial-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 100px; background: #e8f0fb; color: #185fa5; margin-left: auto; white-space: nowrap; }
 
         /* ─── STATS ───────────────────────────────────────── */
         .stats-section { background: #185fa5; padding: 80px 60px; }
@@ -439,21 +289,9 @@ export default function LandingPage() {
         /* ─── PRICING ─────────────────────────────────────── */
         .pricing-section { padding: 100px 60px; background: #f8f7f4; text-align: center; }
         .pricing-cards { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin-top: 56px; }
-        .pricing-card {
-          background: white; border-radius: 20px; padding: 40px 36px;
-          border: 1px solid rgba(26,26,46,0.08); width: 300px;
-          text-align: left; position: relative;
-        }
-        .pricing-card.featured {
-          background: #1a1a2e; border-color: #1a1a2e;
-          box-shadow: 0 20px 60px rgba(26,26,46,0.2);
-        }
-        .pricing-badge {
-          position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-          background: #f5c842; color: #1a1a2e; font-size: 11px; font-weight: 700;
-          padding: 4px 14px; border-radius: 100px; white-space: nowrap;
-          letter-spacing: 0.05em; text-transform: uppercase;
-        }
+        .pricing-card { background: white; border-radius: 20px; padding: 40px 36px; border: 1px solid rgba(26,26,46,0.08); width: 300px; text-align: left; position: relative; }
+        .pricing-card.featured { background: #1a1a2e; border-color: #1a1a2e; box-shadow: 0 20px 60px rgba(26,26,46,0.2); }
+        .pricing-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #f5c842; color: #1a1a2e; font-size: 11px; font-weight: 700; padding: 4px 14px; border-radius: 100px; white-space: nowrap; letter-spacing: 0.05em; text-transform: uppercase; }
         .pricing-tier { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #999; margin-bottom: 12px; }
         .pricing-tier.light { color: rgba(248,247,244,0.5); }
         .pricing-price { font-family: Georgia, serif; font-size: 48px; font-weight: 700; color: #1a1a2e; line-height: 1; }
@@ -469,48 +307,29 @@ export default function LandingPage() {
         .pricing-check { color: #0f6e56; font-weight: 700; flex-shrink: 0; }
         .pricing-check.light { color: #5dcaa5; }
         .pricing-lock { color: #ccc; flex-shrink: 0; }
-        .pricing-btn {
-          display: block; text-align: center; padding: 14px;
-          border-radius: 100px; font-size: 15px; font-weight: 700;
-          text-decoration: none; transition: all 0.2s;
-        }
+        .pricing-btn { display: block; text-align: center; padding: 14px; border-radius: 100px; font-size: 15px; font-weight: 700; text-decoration: none; transition: all 0.2s; }
         .pricing-btn-free { background: #f8f7f4; color: #1a1a2e; border: 1.5px solid rgba(26,26,46,0.15); }
         .pricing-btn-free:hover { background: #eee; }
         .pricing-btn-pro { background: #f5c842; color: #1a1a2e; }
         .pricing-btn-pro:hover { background: #e8b800; transform: translateY(-1px); }
 
         /* ─── CTA ─────────────────────────────────────────── */
-        .cta-section {
-          background: #1a1a2e; padding: 100px 60px; text-align: center;
-        }
+        .cta-section { background: #1a1a2e; padding: 100px 60px; text-align: center; }
         .cta-h2 { font-family: Georgia, serif; font-size: clamp(28px, 3vw, 44px); font-weight: 700; color: #f8f7f4; margin-bottom: 16px; }
         .cta-sub { font-size: 17px; color: rgba(248,247,244,0.6); margin-bottom: 40px; }
-        .cta-btn {
-          display: inline-flex; align-items: center; gap: 8px;
-          background: #f5c842; color: #1a1a2e; padding: 16px 40px;
-          border-radius: 100px; font-size: 16px; font-weight: 700;
-          text-decoration: none; transition: all 0.2s;
-          box-shadow: 0 4px 20px rgba(245,200,66,0.3);
-        }
+        .cta-btn { display: inline-flex; align-items: center; gap: 8px; background: #f5c842; color: #1a1a2e; padding: 16px 40px; border-radius: 100px; font-size: 16px; font-weight: 700; text-decoration: none; transition: all 0.2s; box-shadow: 0 4px 20px rgba(245,200,66,0.3); }
         .cta-btn:hover { background: #e8b800; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(245,200,66,0.4); }
         .cta-fine { margin-top: 20px; font-size: 13px; color: rgba(248,247,244,0.35); }
 
         /* ─── FOOTER ──────────────────────────────────────── */
-        .footer {
-          background: #111827; padding: 48px 60px;
-          display: flex; justify-content: space-between; align-items: center;
-          flex-wrap: wrap; gap: 24px;
-        }
+        .footer { background: #111827; padding: 48px 60px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px; }
         .footer-logo { font-family: Georgia, serif; font-size: 19px; font-weight: 700; color: #f8f7f4; }
         .footer-logo span { color: #f5c842; }
         .footer-links { display: flex; gap: 28px; flex-wrap: wrap; }
         .footer-link { text-decoration: none; color: rgba(248,247,244,0.45); font-size: 14px; transition: color 0.2s; }
         .footer-link:hover { color: #f8f7f4; }
         .footer-copy { font-size: 13px; color: rgba(248,247,244,0.3); }
-        .disclaimer {
-          background: #0d131e; padding: 16px 60px; text-align: center;
-          font-size: 12px; color: rgba(248,247,244,0.25); line-height: 1.6;
-        }
+        .disclaimer { background: #0d131e; padding: 16px 60px; text-align: center; font-size: 12px; color: rgba(248,247,244,0.25); line-height: 1.6; }
 
         /* ─── RESPONSIVE: 1200px ─────────────────────────── */
         @media (max-width: 1200px) {
@@ -519,63 +338,47 @@ export default function LandingPage() {
 
         /* ─── RESPONSIVE: 1024px ─────────────────────────── */
         @media (max-width: 1024px) {
-  .hero {
-    gap: 32px;
-    padding: 90px 32px 60px;
-    min-height: auto;
-  }
-  .hero-visual { width: 300px; }
-  .steps { grid-template-columns: repeat(3, 1fr); }
-  .steps .step:nth-child(3) .step-connector { display: none; }
-}
+          .hero { gap: 32px; padding: 90px 32px 60px; min-height: auto; }
+          .hero-visual { width: 300px; }
+          .steps { grid-template-columns: repeat(3, 1fr); }
+          .steps .step:nth-child(3) .step-connector { display: none; }
+          .wtl-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 1024px) and (orientation: landscape) {
+          .hero { padding-top: 80px; min-height: auto; align-items: flex-start; }
+        }
 
-@media (max-width: 1024px) and (orientation: landscape) {
-  .hero {
-    padding-top: 80px;
-    min-height: auto;
-    align-items: flex-start;
-  }
-}
         /* ─── RESPONSIVE: 900px ──────────────────────────── */
         @media (max-width: 900px) {
           .nav { padding: 16px 24px; }
           .nav-links { display: none; }
           .nav-hamburger { display: flex; }
-
-          /* Hero goes single column */
-          .hero {
-            flex-direction: column; align-items: flex-start;
-            padding: 100px 24px 60px; min-height: auto; gap: 48px;
-          }
+          .hero { flex-direction: column; align-items: flex-start; padding: 100px 24px 60px; min-height: auto; gap: 48px; }
           .hero-content { max-width: 100%; }
           .hero-visual { width: 100%; max-width: 440px; align-self: center; }
           .chip-1 { top: -12px; right: -8px; font-size: 12px; padding: 6px 12px; }
           .chip-2 { bottom: -12px; left: -8px; font-size: 12px; padding: 6px 12px; }
-
           .proof-bar { padding: 20px 24px; gap: 20px; }
           .proof-item { font-size: 12px; }
-
           .section { padding: 72px 24px; }
           .how-section { padding: 72px 24px; }
           .testimonials-section { padding: 72px 24px; }
           .stats-section { padding: 60px 24px; }
-          .sped-section { padding: 72px 24px; gap: 48px; }
+          .sped-section { padding: 72px 24px; gap: 48px; flex-direction: column; }
+          .sped-quote { max-width: 100%; }
           .pricing-section { padding: 72px 24px; }
           .cta-section { padding: 72px 24px; }
-
           .steps { grid-template-columns: repeat(2, 1fr); gap: 24px; }
           .steps .step:nth-child(2) .step-connector,
           .steps .step:nth-child(4) .step-connector { display: none; }
           .steps .step:nth-child(3) .step-connector { display: block; }
-
-          .sped-section { flex-direction: column; }
-          .sped-quote { max-width: 100%; }
-
           .footer { padding: 40px 24px; flex-direction: column; align-items: flex-start; gap: 20px; }
           .footer-links { gap: 20px; }
           .disclaimer { padding: 16px 24px; }
           .pricing-cards { flex-direction: column; align-items: center; }
           .pricing-card { width: 100%; max-width: 360px; }
+          .wtl-section { padding: 72px 24px; }
+          .wtl-grid { grid-template-columns: 1fr; }
         }
 
         /* ─── RESPONSIVE: 480px ──────────────────────────── */
@@ -630,8 +433,6 @@ export default function LandingPage() {
       <section className="hero">
         <div className="hero-bg" />
         <div className="hero-grid" />
-
-        {/* LEFT: copy */}
         <div className="hero-content">
           <div className="hero-badge">
             <div className="hero-badge-dot" />
@@ -657,12 +458,10 @@ export default function LandingPage() {
             <span className="hero-trust-text">Built by and for special education teachers</span>
           </div>
         </div>
-
-        {/* RIGHT: IEP card */}
         <div className="hero-visual">
-          <div style={{position: 'relative'}}>
+          <div style={{position:'relative'}}>
             <div className="floating-chip chip-1">
-              <div className="chip-dot" style={{background: '#5dcaa5'}} />
+              <div className="chip-dot" style={{background:'#5dcaa5'}} />
               IEP Generated in 52 seconds
             </div>
             <div className="iep-card">
@@ -676,15 +475,15 @@ export default function LandingPage() {
               </div>
               <div className="iep-section-label">Annual Goals</div>
               <div className="iep-goal">
-                <div className="iep-goal-dot" style={{background: '#4a90d9'}} />
+                <div className="iep-goal-dot" style={{background:'#4a90d9'}} />
                 <div className="iep-goal-text">Jamie will use 3-word phrases to request preferred items with 80% accuracy across 3 sessions.</div>
               </div>
               <div className="iep-goal">
-                <div className="iep-goal-dot" style={{background: '#5dcaa5'}} />
+                <div className="iep-goal-dot" style={{background:'#5dcaa5'}} />
                 <div className="iep-goal-text">Jamie will initiate peer interactions during structured play 3x per 30-min session.</div>
               </div>
               <div className="iep-goal">
-                <div className="iep-goal-dot" style={{background: '#f5c842'}} />
+                <div className="iep-goal-dot" style={{background:'#f5c842'}} />
                 <div className="iep-goal-text">Jamie will independently complete 4-step self-care routines with visual supports.</div>
               </div>
               <div className="iep-progress">
@@ -694,7 +493,7 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="floating-chip chip-2">
-              <div className="chip-dot" style={{background: '#4a90d9'}} />
+              <div className="chip-dot" style={{background:'#4a90d9'}} />
               IDEA 2004 compliant draft
             </div>
           </div>
@@ -730,7 +529,7 @@ export default function LandingPage() {
             { icon: '📤', title: 'PDF & Data Export', desc: 'Export to print-ready PDF or structured data for your district system.', tag: 'Core Feature', tagClass: 'tag-core' },
             { icon: '👨‍👩‍👧', title: 'Multi-Student Roster', desc: 'Manage all your students in one place with full IEP history and version tracking.', tag: 'Core Feature', tagClass: 'tag-core' },
             { icon: '♿', title: 'Accommodations Library', desc: 'Pre-built, categorized accommodations — with AI suggestions based on disability profile.', tag: 'Core Feature', tagClass: 'tag-core' },
-            { icon: '🔁', title: 'Iterative Editing', desc: 'Regenerate individual sections without losing the rest. Refine until it\'s exactly right.', tag: 'Pro Feature', tagClass: 'tag-pro' },
+            { icon: '🔁', title: 'Iterative Editing', desc: "Regenerate individual sections without losing the rest. Refine until it's exactly right.", tag: 'Pro Feature', tagClass: 'tag-pro' },
             { icon: '🗃️', title: 'Student Archiving', desc: 'Archive students at year-end to preserve records without cluttering your active roster.', tag: 'Pro Feature', tagClass: 'tag-pro' },
           ].map((f, i) => (
             <div key={i} className="feature-card">
@@ -740,6 +539,57 @@ export default function LandingPage() {
               <span className={`feature-tag ${f.tagClass}`}>{f.tag}</span>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* WHAT TEACHERS LOVE */}
+      <section className="wtl-section">
+        <div className="wtl-label">What Teachers Actually Love</div>
+        <h2 className="wtl-h2">The things teachers tell us they didn&apos;t expect — but can&apos;t live without.</h2>
+        <div className="wtl-grid">
+
+          <div className="wtl-card" style={{'--wtl-accent': '#5dcaa5'} as React.CSSProperties}>
+            <div className="wtl-fear">
+              <div className="wtl-fear-label">The fear before SmartIEP</div>
+              <p className="wtl-fear-text">&ldquo;What if the AI writes one bad goal? Do I have to throw out the whole IEP and start over?&rdquo;</p>
+            </div>
+            <div className="wtl-arrow">↓</div>
+            <div>
+              <div className="wtl-solution-label">The reality</div>
+              <div className="wtl-solution-title">Regenerate any section independently.</div>
+              <p className="wtl-solution-desc">Not happy with the communication goals? Regenerate just those — without touching the PLAAFP, services, or accommodations you already approved. Nothing is ever all-or-nothing.</p>
+            </div>
+            <span className="wtl-tag">✦ No all-or-nothing rewrites</span>
+          </div>
+
+          <div className="wtl-card" style={{'--wtl-accent': '#f5c842'} as React.CSSProperties}>
+            <div className="wtl-fear">
+              <div className="wtl-fear-label">The fear before SmartIEP</div>
+              <p className="wtl-fear-text">&ldquo;OK the IEP is done — but I still have to write quarterly progress reports for every single goal.&rdquo;</p>
+            </div>
+            <div className="wtl-arrow">↓</div>
+            <div>
+              <div className="wtl-solution-label">The reality</div>
+              <div className="wtl-solution-title">Log data. Get a report. Done.</div>
+              <p className="wtl-solution-desc">Track progress notes throughout the year, then generate a complete AI-written quarterly progress report from your data in seconds — ready to share with families at conferences.</p>
+            </div>
+            <span className="wtl-tag">✦ Quarterly reports in seconds</span>
+          </div>
+
+          <div className="wtl-card" style={{'--wtl-accent': '#4a90d9'} as React.CSSProperties}>
+            <div className="wtl-fear">
+              <div className="wtl-fear-label">The fear before SmartIEP</div>
+              <p className="wtl-fear-text">&ldquo;I keep multiple Word doc versions because I&apos;m terrified of losing a draft I spent hours on.&rdquo;</p>
+            </div>
+            <div className="wtl-arrow">↓</div>
+            <div>
+              <div className="wtl-solution-label">The reality</div>
+              <div className="wtl-solution-title">Every version is saved. Forever.</div>
+              <p className="wtl-solution-desc">SmartIEP keeps your complete IEP history — every draft, every revision, every generated version. Nothing is ever overwritten. Go back to any previous version whenever you need it.</p>
+            </div>
+            <span className="wtl-tag">✦ Full version history</span>
+          </div>
+
         </div>
       </section>
 
@@ -778,7 +628,7 @@ export default function LandingPage() {
           </div>
         </div>
         <div className="sped-quote">
-          <p className="sped-quote-text">"I used to spend my entire Sunday writing IEPs. Now I spend 20 minutes reviewing them. SmartIEP gave me my weekends back."</p>
+          <p className="sped-quote-text">&ldquo;I used to spend my entire Sunday writing IEPs. Now I spend 20 minutes reviewing them. SmartIEP gave me my weekends back.&rdquo;</p>
           <div className="sped-quote-author">
             <div className="sped-quote-avatar">KL</div>
             <div>
@@ -804,7 +654,7 @@ export default function LandingPage() {
           ].map((t, i) => (
             <div key={i} className="testimonial-card">
               <div className="testimonial-stars">★★★★★</div>
-              <p className="testimonial-quote">"{t.quote}"</p>
+              <p className="testimonial-quote">&ldquo;{t.quote}&rdquo;</p>
               <div className="testimonial-author">
                 <div className="testimonial-avatar" style={{'--av-bg': t.bg, '--av-color': t.color} as React.CSSProperties}>{t.initials}</div>
                 <div>
@@ -838,10 +688,9 @@ export default function LandingPage() {
       {/* PRICING */}
       <section className="pricing-section" id="pricing">
         <div className="section-label">Simple Pricing</div>
-        <h2 className="section-h2">Start free. Upgrade when you're ready.</h2>
+        <h2 className="section-h2">Start free. Upgrade when you&apos;re ready.</h2>
         <p className="section-sub" style={{margin:'0 auto',textAlign:'center'}}>No credit card required to get started.</p>
         <div className="pricing-cards">
-          {/* Free */}
           <div className="pricing-card">
             <div className="pricing-tier">Free</div>
             <div className="pricing-price">$0</div>
@@ -857,8 +706,6 @@ export default function LandingPage() {
             </ul>
             <Link href="/auth/signup" className="pricing-btn pricing-btn-free">Get started free</Link>
           </div>
-
-          {/* Pro */}
           <div className="pricing-card featured">
             <div className="pricing-badge">Most Popular</div>
             <div className="pricing-tier light">Pro</div>
