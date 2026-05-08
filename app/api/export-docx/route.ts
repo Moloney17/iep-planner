@@ -241,7 +241,7 @@ export async function POST(request: NextRequest) {
       user_id: user.id,
       event_type: 'docx_exported',
       metadata: { student_name: student.name },
-    }).catch(() => {});
+    }).then(({ error }) => { if (error) console.error('Usage log error:', error); });
 
     return new NextResponse(buffer, {
       headers: {
