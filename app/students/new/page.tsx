@@ -12,6 +12,18 @@ const STEPS = [
   { num: 4, label: 'Review' },
 ];
 
+const STREAMING_MESSAGES = [
+  'Analyzing present levels of performance...',
+  'Drafting PLAAFP narrative...',
+  'Generating annual goals...',
+  'Writing short-term objectives...',
+  'Determining services and supports...',
+  'Building accommodations list...',
+  'Writing progress monitoring plan...',
+  'Finalizing LRE justification...',
+  'Almost done...',
+];
+
 type FormData = Omit<Student, 'id' | 'createdAt' | 'updatedAt' | 'generatedIEP' | 'iepHistory'>;
 
 const empty: FormData = {
@@ -43,12 +55,23 @@ export default function NewStudentPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationError, setGenerationError] = useState('');
   const [isDirty, setIsDirty] = useState(false);
+  const [streamingText, setStreamingText] = useState('');
+  const [streamingMessage, setStreamingMessage] = useState(0);
 
   useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => { if (isDirty && !isGenerating) { e.preventDefault(); e.returnValue = ''; } };
     window.addEventListener('beforeunload', handler);
     return () => window.removeEventListener('beforeunload', handler);
   }, [isDirty, isGenerating]);
+
+  // Cycle through status messages while generating
+  useEffect(() => {
+    if (!isGenerating) { setStreamingMessage(0); return; }
+    const interval = setInterval(() => {
+      setStreamingMessage(prev => (prev + 1) % STREAMING_MESSAGES.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [isGenerating]);
 
   const set = (field: keyof FormData, value: string) => { setForm(prev => ({ ...prev, [field]: value })); setIsDirty(true); };
   const setLevel = (field: keyof FormData['presentLevels'], value: string) => { setForm(prev => ({ ...prev, presentLevels: { ...prev.presentLevels, [field]: value } })); setIsDirty(true); };
@@ -75,18 +98,32 @@ export default function NewStudentPage() {
   const handleCancel = () => { if (isDirty && !confirm('You have unsaved data. Leave without saving?')) return; router.push('/'); };
 
   const handleGenerate = async () => {
-    setIsGenerating(true); setGenerationError(''); setIsDirty(false);
+    setIsGenerating(true); setGenerationError(''); setIsDirty(false); setStreamingText('');
     const student: Student = { ...form, id: generateId(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
     await saveStudent(student);
     try {
       const res = await fetch('/api/generate-iep', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(student) });
       if (!res.ok) { const err = await res.json(); throw new Error(err.error || 'Generation failed'); }
-      const iep = await res.json();
+
+      // Stream the response instead of waiting for res.json()
+      const reader = res.body?.getReader();
+      if (!reader) throw new Error('No response stream available');
+      const decoder = new TextDecoder();
+      let accumulated = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        accumulated += chunk;
+        setStreamingText(accumulated);
+      }
+      const iep = JSON.parse(accumulated.trim());
+
       await saveStudent({ ...student, generatedIEP: iep, updatedAt: new Date().toISOString() });
       router.push(`/students/${student.id}`);
     } catch (err) {
       setGenerationError(err instanceof Error ? err.message : 'Failed to generate IEP. Please try again.');
-      setIsGenerating(false); setIsDirty(true);
+      setIsGenerating(false); setIsDirty(true); setStreamingText('');
     }
   };
 
@@ -211,12 +248,29 @@ export default function NewStudentPage() {
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-xs text-yellow-800">
               <strong>⚠️ Important:</strong> Review all generated content with your special education team before use.
             </div>
-            {generationError && <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-sm text-red-700"><strong>Generation failed:</strong> {generationError}</div>}
+            {generationError && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-sm text-red-700">
+                <strong>Generation failed:</strong> {generationError}
+              </div>
+            )}
             {isGenerating && (
               <div className="flex flex-col items-center py-8">
                 <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4" />
-                <p className="text-gray-700 font-medium">Generating IEP plan...</p>
-                <p className="text-gray-400 text-sm mt-1">This may take 30–90 seconds.</p>
+                <p className="text-gray-700 font-medium mb-1">Generating IEP plan...</p>
+                <p className="text-blue-600 text-sm font-medium mb-4 h-5">
+                  {STREAMING_MESSAGES[streamingMessage]}
+                </p>
+                {streamingText.length > 0 && (
+                  <div className="w-full max-w-xs">
+                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div
+                        className="h-2 bg-blue-500 rounded-full transition-all duration-300"
+                        style={{ width: `${Math.min((streamingText.length / 8000) * 100, 95)}%` }}
+                      />
+                    </div>
+                    <p className="text-xs text-gray-400 mt-1 text-center">{streamingText.length.toLocaleString()} characters received</p>
+                  </div>
+                )}
               </div>
             )}
           </div>
