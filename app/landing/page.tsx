@@ -223,7 +223,140 @@ export default function LandingPage() {
         .tag-pro { background: #e8f0fb; color: #185fa5; }
         .tag-idea { background: #fef9e7; color: #9a6e00; }
 
-        /* ─── HOW IT WORKS ────────────────────────────────── */
+<section style={{
+        background: '#1a1a2e',
+        padding: '100px 60px',
+      }}>
+        <style>{`
+          .wtl-label {
+            font-size: 12px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.12em; color: #f5c842; margin-bottom: 16px;
+          }
+          .wtl-h2 {
+            font-family: Georgia, serif;
+            font-size: clamp(28px, 3vw, 42px);
+            font-weight: 700; color: #f8f7f4; line-height: 1.2;
+            margin-bottom: 60px; max-width: 560px;
+          }
+          .wtl-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+          }
+          .wtl-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 36px 32px;
+            display: flex; flex-direction: column; gap: 28px;
+            transition: background 0.2s;
+          }
+          .wtl-card:hover {
+            background: rgba(255,255,255,0.08);
+          }
+          .wtl-fear {
+            background: rgba(0,0,0,0.25);
+            border-left: 3px solid rgba(255,255,255,0.15);
+            border-radius: 0 10px 10px 0;
+            padding: 16px 18px;
+          }
+          .wtl-fear-label {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.1em; color: rgba(248,247,244,0.35);
+            margin-bottom: 8px;
+          }
+          .wtl-fear-text {
+            font-family: Georgia, serif; font-style: italic;
+            font-size: 14px; line-height: 1.7;
+            color: rgba(248,247,244,0.55);
+          }
+          .wtl-arrow {
+            font-size: 20px; color: var(--wtl-accent);
+            align-self: flex-start;
+          }
+          .wtl-solution-label {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.1em; color: var(--wtl-accent);
+            margin-bottom: 10px;
+          }
+          .wtl-solution-title {
+            font-family: Georgia, serif; font-size: 20px; font-weight: 700;
+            color: #f8f7f4; line-height: 1.3; margin-bottom: 10px;
+          }
+          .wtl-solution-desc {
+            font-size: 14px; line-height: 1.75;
+            color: rgba(248,247,244,0.65);
+          }
+          .wtl-tag {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: rgba(248,247,244,0.6);
+            padding: 5px 12px; border-radius: 100px;
+            font-size: 12px; font-weight: 500;
+            margin-top: auto; align-self: flex-start;
+          }
+
+          @media (max-width: 900px) {
+            .wtl-grid { grid-template-columns: 1fr; }
+            section.wtl-section { padding: 72px 24px !important; }
+          }
+        `}</style>
+
+        <div className="wtl-label">What Teachers Actually Love</div>
+        <h2 className="wtl-h2">The things teachers tell us they didn't expect — but can't live without.</h2>
+
+        <div className="wtl-grid">
+
+          {/* Card 1 — Regenerate sections */}
+          <div className="wtl-card" style={{'--wtl-accent': '#5dcaa5'} as React.CSSProperties}>
+            <div className="wtl-fear">
+              <div className="wtl-fear-label">The fear before SmartIEP</div>
+              <p className="wtl-fear-text">"What if the AI writes one bad goal? Do I have to throw out the whole IEP and start over?"</p>
+            </div>
+            <div className="wtl-arrow">↓</div>
+            <div>
+              <div className="wtl-solution-label">The reality</div>
+              <div className="wtl-solution-title">Regenerate any section independently.</div>
+              <p className="wtl-solution-desc">Not happy with the communication goals? Regenerate just those — without touching the PLAAFP, services, or accommodations you already approved. Nothing is ever all-or-nothing.</p>
+            </div>
+            <span className="wtl-tag">✦ No all-or-nothing rewrites</span>
+          </div>
+
+          {/* Card 2 — AI progress reports */}
+          <div className="wtl-card" style={{'--wtl-accent': '#f5c842'} as React.CSSProperties}>
+            <div className="wtl-fear">
+              <div className="wtl-fear-label">The fear before SmartIEP</div>
+              <p className="wtl-fear-text">"OK the IEP is done — but I still have to write quarterly progress reports for every single goal."</p>
+            </div>
+            <div className="wtl-arrow">↓</div>
+            <div>
+              <div className="wtl-solution-label">The reality</div>
+              <div className="wtl-solution-title">Log data. Get a report. Done.</div>
+              <p className="wtl-solution-desc">Track progress notes throughout the year, then generate a complete AI-written quarterly progress report from your data in seconds — ready to share with families at conferences.</p>
+            </div>
+            <span className="wtl-tag">✦ Quarterly reports in seconds</span>
+          </div>
+
+          {/* Card 3 — Version history */}
+          <div className="wtl-card" style={{'--wtl-accent': '#4a90d9'} as React.CSSProperties}>
+            <div className="wtl-fear">
+              <div className="wtl-fear-label">The fear before SmartIEP</div>
+              <p className="wtl-fear-text">"I keep multiple Word doc versions because I'm terrified of losing a draft I spent hours on."</p>
+            </div>
+            <div className="wtl-arrow">↓</div>
+            <div>
+              <div className="wtl-solution-label">The reality</div>
+              <div className="wtl-solution-title">Every version is saved. Forever.</div>
+              <p className="wtl-solution-desc">SmartIEP keeps your complete IEP history — every draft, every revision, every generated version. Nothing is ever overwritten. Go back to any previous version whenever you need it.</p>
+            </div>
+            <span className="wtl-tag">✦ Full version history</span>
+          </div>
+
+        </div>
+      </section>
+       
+ /* ─── HOW IT WORKS ────────────────────────────────── */
         .how-section { background: white; padding: 100px 60px; }
         .steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 28px; margin-top: 56px; }
         .step { position: relative; }
