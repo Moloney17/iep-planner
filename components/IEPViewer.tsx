@@ -19,21 +19,56 @@ function SectionHeader({ title, badge }: { title: string; badge?: string }) {
   );
 }
 
-function EditableText({ value, onChange, multiline = false }: { value: string; onChange: (v: string) => void; multiline?: boolean }) {
+function EditableText({ value, onChange, multiline = false }: {
+  value: string;
+  onChange: (v: string) => void;
+  multiline?: boolean;
+}) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value);
+
   if (!editing) {
-    return <span className="cursor-pointer hover:bg-yellow-50 hover:outline hover:outline-1 hover:outline-yellow-300 rounded px-0.5 transition-all" title="Click to edit" onClick={() => { setDraft(value); setEditing(true); }}>{value}</span>;
+    return (
+      <span
+        className="cursor-pointer hover:bg-yellow-50 hover:outline hover:outline-1 hover:outline-yellow-300 rounded px-0.5 transition-all"
+        title="Click to edit"
+        onClick={e => { e.stopPropagation(); setDraft(value); setEditing(true); }}
+      >
+        {value}
+      </span>
+    );
   }
+
   return (
-    <span className="block">
+    <span className="block w-full">
       {multiline
-        ? <textarea autoFocus value={draft} onChange={e => setDraft(e.target.value)} rows={5} className="w-full border border-blue-400 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y" />
-        : <input autoFocus value={draft} onChange={e => setDraft(e.target.value)} className="w-full border border-blue-400 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        ? <textarea
+            autoFocus
+            value={draft}
+            onChange={e => setDraft(e.target.value)}
+            rows={5}
+            className="w-full border border-blue-400 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y block"
+          />
+        : <input
+            autoFocus
+            value={draft}
+            onChange={e => setDraft(e.target.value)}
+            className="w-full border border-blue-400 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 block"
+          />
       }
       <span className="flex gap-2 mt-1.5">
-        <button onClick={() => { onChange(draft); setEditing(false); }} className="text-xs bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700">Save</button>
-        <button onClick={() => setEditing(false)} className="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded-md hover:bg-gray-200">Cancel</button>
+        <button
+          onClick={e => { e.stopPropagation(); onChange(draft); setEditing(false); }}
+          className="text-xs bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700"
+        >
+          Save
+        </button>
+        <button
+          onClick={e => { e.stopPropagation(); setEditing(false); }}
+          className="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded-md hover:bg-gray-200"
+        >
+          Cancel
+        </button>
       </span>
     </span>
   );
@@ -44,9 +79,13 @@ function GoalCard({ goal, onUpdate, editMode }: { goal: IEPGoal; onUpdate: (g: I
   const icon = DOMAIN_ICONS[goal.domain] ?? '📌';
   return (
     <div className="border rounded-xl p-5 hover:shadow-sm transition-shadow">
-      <div className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full border mb-3 ${colorClass}`}><span>{icon}</span> {goal.domain}</div>
+      <div className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full border mb-3 ${colorClass}`}>
+        <span>{icon}</span> {goal.domain}
+      </div>
       <p className="text-gray-800 text-sm font-medium mb-3 leading-relaxed">
-        {editMode ? <EditableText value={goal.goalStatement} onChange={v => onUpdate({ ...goal, goalStatement: v })} multiline /> : goal.goalStatement}
+        {editMode
+          ? <EditableText value={goal.goalStatement} onChange={v => onUpdate({ ...goal, goalStatement: v })} multiline />
+          : goal.goalStatement}
       </p>
       {goal.benchmarks.length > 0 && (
         <div className="mb-3">
@@ -55,15 +94,31 @@ function GoalCard({ goal, onUpdate, editMode }: { goal: IEPGoal; onUpdate: (g: I
             {goal.benchmarks.map((b, i) => (
               <li key={i} className="flex gap-2 text-sm text-gray-600">
                 <span className="shrink-0 w-5 h-5 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center text-xs font-bold">{i + 1}</span>
-                {editMode ? <EditableText value={b} onChange={v => { const bs = [...goal.benchmarks]; bs[i] = v; onUpdate({ ...goal, benchmarks: bs }); }} /> : b}
+                {editMode
+                  ? <EditableText value={b} onChange={v => { const bs = [...goal.benchmarks]; bs[i] = v; onUpdate({ ...goal, benchmarks: bs }); }} />
+                  : b}
               </li>
             ))}
           </ol>
         </div>
       )}
       <div className="grid grid-cols-2 gap-3 pt-3 border-t">
-        <div><p className="text-xs font-semibold text-gray-400 uppercase">Success Criteria</p><p className="text-xs text-gray-600 mt-0.5">{editMode ? <EditableText value={goal.successCriteria} onChange={v => onUpdate({ ...goal, successCriteria: v })} /> : goal.successCriteria}</p></div>
-        <div><p className="text-xs font-semibold text-gray-400 uppercase">Timeframe</p><p className="text-xs text-gray-600 mt-0.5">{editMode ? <EditableText value={goal.timeframe} onChange={v => onUpdate({ ...goal, timeframe: v })} /> : goal.timeframe}</p></div>
+        <div>
+          <p className="text-xs font-semibold text-gray-400 uppercase">Success Criteria</p>
+          <p className="text-xs text-gray-600 mt-0.5">
+            {editMode
+              ? <EditableText value={goal.successCriteria} onChange={v => onUpdate({ ...goal, successCriteria: v })} />
+              : goal.successCriteria}
+          </p>
+        </div>
+        <div>
+          <p className="text-xs font-semibold text-gray-400 uppercase">Timeframe</p>
+          <p className="text-xs text-gray-600 mt-0.5">
+            {editMode
+              ? <EditableText value={goal.timeframe} onChange={v => onUpdate({ ...goal, timeframe: v })} />
+              : goal.timeframe}
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -81,41 +136,91 @@ function ServiceRow({ service }: { service: IEPService }) {
   );
 }
 
-function ProgressCard({ plan }: { plan: ProgressPlan }) {
+function ProgressCard({ plan, onUpdate, editMode }: {
+  plan: ProgressPlan;
+  onUpdate: (p: ProgressPlan) => void;
+  editMode: boolean;
+}) {
   const colorClass = DOMAIN_COLORS[plan.goalDomain] ?? 'bg-gray-100 text-gray-800 border-gray-200';
   const icon = DOMAIN_ICONS[plan.goalDomain] ?? '📌';
   return (
     <div className="border rounded-xl p-4">
-      <div className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full border mb-3 ${colorClass}`}><span>{icon}</span> {plan.goalDomain}</div>
+      <div className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full border mb-3 ${colorClass}`}>
+        <span>{icon}</span> {plan.goalDomain}
+      </div>
       <div className="grid grid-cols-2 gap-3 text-sm">
-        <div><p className="text-xs font-semibold text-gray-400 uppercase mb-1">Data Collection</p><p className="text-gray-700">{plan.dataCollectionMethod}</p></div>
-        <div><p className="text-xs font-semibold text-gray-400 uppercase mb-1">Frequency</p><p className="text-gray-700">{plan.frequency}</p></div>
-        <div><p className="text-xs font-semibold text-gray-400 uppercase mb-1">Responsible Party</p><p className="text-gray-700">{plan.responsibleParty}</p></div>
-        <div><p className="text-xs font-semibold text-gray-400 uppercase mb-1">Reporting Schedule</p><p className="text-gray-700">{plan.reportingSchedule}</p></div>
+        <div>
+          <p className="text-xs font-semibold text-gray-400 uppercase mb-1">Data Collection</p>
+          <p className="text-gray-700">
+            {editMode
+              ? <EditableText value={plan.dataCollectionMethod} onChange={v => onUpdate({ ...plan, dataCollectionMethod: v })} multiline />
+              : plan.dataCollectionMethod}
+          </p>
+        </div>
+        <div>
+          <p className="text-xs font-semibold text-gray-400 uppercase mb-1">Frequency</p>
+          <p className="text-gray-700">
+            {editMode
+              ? <EditableText value={plan.frequency} onChange={v => onUpdate({ ...plan, frequency: v })} />
+              : plan.frequency}
+          </p>
+        </div>
+        <div>
+          <p className="text-xs font-semibold text-gray-400 uppercase mb-1">Responsible Party</p>
+          <p className="text-gray-700">
+            {editMode
+              ? <EditableText value={plan.responsibleParty} onChange={v => onUpdate({ ...plan, responsibleParty: v })} />
+              : plan.responsibleParty}
+          </p>
+        </div>
+        <div>
+          <p className="text-xs font-semibold text-gray-400 uppercase mb-1">Reporting Schedule</p>
+          <p className="text-gray-700">
+            {editMode
+              ? <EditableText value={plan.reportingSchedule} onChange={v => onUpdate({ ...plan, reportingSchedule: v })} />
+              : plan.reportingSchedule}
+          </p>
+        </div>
       </div>
     </div>
   );
 }
 
-export default function IEPViewer({ iep: initialIep, studentName: _studentName }: { iep: GeneratedIEP; studentName?: string }) {
+export default function IEPViewer({
+  iep: initialIep,
+  studentName: _studentName,
+  onSave,
+}: {
+  iep: GeneratedIEP;
+  studentName?: string;
+  onSave?: (updatedIep: GeneratedIEP) => Promise<void>;
+}) {
   const [activeTab, setActiveTab] = useState('plaafp');
   const [editMode, setEditMode] = useState(false);
   const [iep, setIep] = useState<GeneratedIEP>(initialIep);
+  const [saving, setSaving] = useState(false);
   const [editSaved, setEditSaved] = useState(false);
 
-  const updateGoal = (index: number, updated: IEPGoal) => setIep(prev => ({ ...prev, goals: prev.goals.map((g, i) => i === index ? updated : g) }));
+  const updateGoal = (index: number, updated: IEPGoal) =>
+    setIep(prev => ({ ...prev, goals: prev.goals.map((g, i) => i === index ? updated : g) }));
 
-  const handleSaveEdits = () => {
-    if (typeof window !== 'undefined') {
+  const updateProgressPlan = (index: number, updated: ProgressPlan) =>
+    setIep(prev => ({ ...prev, progressMonitoring: prev.progressMonitoring.map((p, i) => i === index ? updated : p) }));
+
+  const handleSaveEdits = async () => {
+    if (onSave) {
+      setSaving(true);
       try {
-        const data = localStorage.getItem('iep_planner_students');
-        if (data) {
-          const students = JSON.parse(data);
-          const updated = students.map((s: { generatedIEP?: GeneratedIEP }) => s.generatedIEP?.generatedAt === iep.generatedAt ? { ...s, generatedIEP: iep } : s);
-          localStorage.setItem('iep_planner_students', JSON.stringify(updated));
-          setEditSaved(true); setTimeout(() => setEditSaved(false), 3000);
-        }
-      } catch {}
+        await onSave(iep);
+        setEditSaved(true);
+        setTimeout(() => setEditSaved(false), 3000);
+      } catch (e) {
+        console.error('Save error:', e);
+        alert('Failed to save edits. Please try again.');
+        setSaving(false);
+        return;
+      }
+      setSaving(false);
     }
     setEditMode(false);
   };
@@ -135,17 +240,38 @@ export default function IEPViewer({ iep: initialIep, studentName: _studentName }
           {editSaved && <span className="text-xs text-green-600 font-medium">✅ Saved</span>}
           {editMode ? (
             <>
-              <button onClick={handleSaveEdits} className="text-xs bg-green-600 text-white px-3 py-1.5 rounded-lg hover:bg-green-700 font-medium">Save Edits</button>
-              <button onClick={() => { setIep(initialIep); setEditMode(false); }} className="text-xs bg-gray-100 text-gray-600 px-3 py-1.5 rounded-lg hover:bg-gray-200">Discard</button>
+              <button
+                onClick={handleSaveEdits}
+                disabled={saving}
+                className="text-xs bg-green-600 text-white px-3 py-1.5 rounded-lg hover:bg-green-700 font-medium disabled:opacity-50"
+              >
+                {saving ? 'Saving...' : 'Save Edits'}
+              </button>
+              <button
+                onClick={() => { setIep(initialIep); setEditMode(false); }}
+                className="text-xs bg-gray-100 text-gray-600 px-3 py-1.5 rounded-lg hover:bg-gray-200"
+              >
+                Discard
+              </button>
             </>
           ) : (
-            <button onClick={() => setEditMode(true)} className="text-xs text-gray-500 hover:text-blue-600 border border-gray-200 hover:border-blue-300 px-3 py-1.5 rounded-lg transition-colors">✏️ Edit Content</button>
+            <button
+              onClick={() => setEditMode(true)}
+              className="text-xs text-gray-500 hover:text-blue-600 border border-gray-200 hover:border-blue-300 px-3 py-1.5 rounded-lg transition-colors"
+            >
+              ✏️ Edit Content
+            </button>
           )}
         </div>
       </div>
 
-      {editMode && <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-2.5 mb-4 text-xs text-blue-700 no-print">✏️ <strong>Edit mode</strong> — click any text to edit it.</div>}
+      {editMode && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-2.5 mb-4 text-xs text-blue-700 no-print">
+          ✏️ <strong>Edit mode</strong> — click any text to edit it. Click <strong>Save Edits</strong> when done.
+        </div>
+      )}
 
+      {/* PLAAFP Tab */}
       {activeTab === 'plaafp' && (
         <div>
           <SectionHeader title="Present Levels of Academic Achievement & Functional Performance" badge="IDEA Required" />
@@ -160,26 +286,40 @@ export default function IEPViewer({ iep: initialIep, studentName: _studentName }
           {iep.lreStatement && (
             <div className="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-5">
               <p className="text-xs font-semibold text-amber-700 uppercase mb-2">Least Restrictive Environment (LRE)</p>
-              <p className="text-sm text-amber-900">{editMode ? <EditableText value={iep.lreStatement} onChange={v => setIep(prev => ({ ...prev, lreStatement: v }))} multiline /> : iep.lreStatement}</p>
+              <p className="text-sm text-amber-900">
+                {editMode
+                  ? <EditableText value={iep.lreStatement} onChange={v => setIep(prev => ({ ...prev, lreStatement: v }))} multiline />
+                  : iep.lreStatement}
+              </p>
             </div>
           )}
         </div>
       )}
 
+      {/* Goals Tab */}
       {activeTab === 'goals' && (
         <div>
           <SectionHeader title="Measurable Annual Goals" badge={`${iep.goals.length} goal${iep.goals.length !== 1 ? 's' : ''}`} />
-          <div className="grid gap-4">{iep.goals.map((goal, i) => <GoalCard key={i} goal={goal} onUpdate={updated => updateGoal(i, updated)} editMode={editMode} />)}</div>
+          <div className="grid gap-4">
+            {iep.goals.map((goal, i) => (
+              <GoalCard key={i} goal={goal} onUpdate={updated => updateGoal(i, updated)} editMode={editMode} />
+            ))}
+          </div>
         </div>
       )}
 
+      {/* Services Tab */}
       {activeTab === 'services' && (
         <div className="space-y-6">
           <div>
             <SectionHeader title="Special Education & Related Services" badge="IDEA Required" />
             <div className="bg-white border rounded-xl overflow-hidden">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b"><tr>{['Service Type','Frequency','Duration','Setting','Provider'].map(h => <th key={h} className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">{h}</th>)}</tr></thead>
+                <thead className="bg-gray-50 border-b">
+                  <tr>{['Service Type','Frequency','Duration','Setting','Provider'].map(h => (
+                    <th key={h} className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">{h}</th>
+                  ))}</tr>
+                </thead>
                 <tbody>{iep.services.map((s, i) => <ServiceRow key={i} service={s} />)}</tbody>
               </table>
             </div>
@@ -188,9 +328,11 @@ export default function IEPViewer({ iep: initialIep, studentName: _studentName }
             <SectionHeader title="Classroom Accommodations & Supports" />
             <ul className="bg-white border rounded-xl divide-y">
               {iep.accommodations.map((acc, i) => (
-                <li key={i} className="px-5 py-3 text-sm text-gray-700 flex gap-3">
-                  <span className="text-blue-500 shrink-0">✓</span>
-                  {editMode ? <EditableText value={acc} onChange={v => { const a = [...iep.accommodations]; a[i] = v; setIep(prev => ({ ...prev, accommodations: a })); }} /> : acc}
+                <li key={i} className="px-5 py-3 text-sm text-gray-700 flex gap-3 items-start">
+                  <span className="text-blue-500 shrink-0 mt-0.5">✓</span>
+                  {editMode
+                    ? <EditableText value={acc} onChange={v => { const a = [...iep.accommodations]; a[i] = v; setIep(prev => ({ ...prev, accommodations: a })); }} />
+                    : acc}
                 </li>
               ))}
             </ul>
@@ -200,9 +342,11 @@ export default function IEPViewer({ iep: initialIep, studentName: _studentName }
               <SectionHeader title="Assessment Accommodations" />
               <ul className="bg-white border rounded-xl divide-y">
                 {iep.assessmentAccommodations.map((acc, i) => (
-                  <li key={i} className="px-5 py-3 text-sm text-gray-700 flex gap-3">
-                    <span className="text-purple-500 shrink-0">✓</span>
-                    {editMode ? <EditableText value={acc} onChange={v => { const a = [...iep.assessmentAccommodations]; a[i] = v; setIep(prev => ({ ...prev, assessmentAccommodations: a })); }} /> : acc}
+                  <li key={i} className="px-5 py-3 text-sm text-gray-700 flex gap-3 items-start">
+                    <span className="text-purple-500 shrink-0 mt-0.5">✓</span>
+                    {editMode
+                      ? <EditableText value={acc} onChange={v => { const a = [...iep.assessmentAccommodations]; a[i] = v; setIep(prev => ({ ...prev, assessmentAccommodations: a })); }} />
+                      : acc}
                   </li>
                 ))}
               </ul>
@@ -211,10 +355,20 @@ export default function IEPViewer({ iep: initialIep, studentName: _studentName }
         </div>
       )}
 
+      {/* Progress Monitoring Tab */}
       {activeTab === 'progress' && (
         <div>
           <SectionHeader title="Progress Monitoring Plan" badge="IDEA Required" />
-          <div className="grid gap-4">{iep.progressMonitoring.map((plan, i) => <ProgressCard key={i} plan={plan} />)}</div>
+          <div className="grid gap-4">
+            {iep.progressMonitoring.map((plan, i) => (
+              <ProgressCard
+                key={i}
+                plan={plan}
+                onUpdate={updated => updateProgressPlan(i, updated)}
+                editMode={editMode}
+              />
+            ))}
+          </div>
           <div className="mt-4 bg-blue-50 border border-blue-100 rounded-lg p-4 text-xs text-blue-700">
             <strong>IDEA Requirement:</strong> Progress must be reported to parents as frequently as non-disabled students receive progress reports (typically quarterly).
           </div>

@@ -283,7 +283,15 @@ export default function StudentPage() {
                 <span className="shrink-0">⚠️</span>
                 <span><strong>Professional Review Required:</strong> This AI-generated IEP draft must be reviewed and approved by qualified special education staff before implementation.</span>
               </div>
-              <IEPViewer iep={displayedIEP} studentName={student.name} />
+              <IEPViewer
+                iep={displayedIEP}
+                studentName={student.name}
+                onSave={async (updatedIep) => {
+                  const updated = { ...student, generatedIEP: updatedIep, updatedAt: new Date().toISOString() };
+                  await saveStudent(updated);
+                  setStudent(updated);
+                }}
+              />
               <div className="mt-6 bg-gray-50 border rounded-lg p-4 text-xs text-gray-500 no-print">
                 Generated {new Date(displayedIEP.generatedAt).toLocaleString()} · {displayedIEP.goals.length} goals · {displayedIEP.services.length} services
               </div>
