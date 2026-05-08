@@ -217,14 +217,14 @@ Return this exact JSON structure (no other text, no markdown fences):
 
           // Log usage after stream completes (fire and forget)
           supabase.from('usage_events').insert({
-            user_id: user.id,
-            event_type: 'iep_generated',
-            metadata: {
-              student_name: student.name,
-              grade: student.grade,
-              disability: student.disabilityCategory,
-            }
-          }).catch((e: unknown) => console.error('Usage log error:', e));
+  user_id: user.id,
+  event_type: 'iep_generated',
+  metadata: {
+    student_name: student.name,
+    grade: student.grade,
+    disability: student.disabilityCategory,
+  }
+}).then(({ error }) => { if (error) console.error('Usage log error:', error); });
 
         } catch (err) {
           controller.error(err);
