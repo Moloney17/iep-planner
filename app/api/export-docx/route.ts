@@ -22,7 +22,7 @@ function buildDocx(student: Student, iep: GeneratedIEP): Document {
   const border = { style: BorderStyle.SINGLE, size: 1, color: 'CCCCCC' };
   const borders = { top: border, bottom: border, left: border, right: border };
 
-  const heading = (text: string, level: HeadingLevel = HeadingLevel.HEADING_1) => new Paragraph({
+  const heading = (text: string, level: (typeof HeadingLevel)[keyof typeof HeadingLevel] = HeadingLevel.HEADING_1) => new Paragraph({
     heading: level,
     spacing: { before: 280, after: 120 },
     border: level === HeadingLevel.HEADING_1 ? { bottom: { style: BorderStyle.SINGLE, size: 6, color: BLUE, space: 4 } } : {},
@@ -237,7 +237,6 @@ export async function POST(request: NextRequest) {
     const buffer = await Packer.toBuffer(doc);
     const filename = `IEP_${student.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.docx`;
 
-    // Log export
     supabase.from('usage_events').insert({
       user_id: user.id,
       event_type: 'docx_exported',
