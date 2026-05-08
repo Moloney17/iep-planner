@@ -243,7 +243,7 @@ export async function POST(request: NextRequest) {
       metadata: { student_name: student.name },
     }).then(({ error }) => { if (error) console.error('Usage log error:', error); });
 
-    return new NextResponse(buffer, {
+    return new NextResponse(new Uint8Array(buffer), {
       headers: {
         'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         'Content-Disposition': `attachment; filename="${filename}"`,
