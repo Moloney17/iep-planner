@@ -125,15 +125,7 @@ export async function POST(request: NextRequest) {
     const rawStudent = await request.json();
     const student: Student = sanitizeStudentData(rawStudent) as unknown as Student;
 
-    // Ownership check
-    const { data: studentRecord, error: studentError } = await supabase
-      .from('students')
-      .select('id')
-      .eq('id', student.id)
-      .single();
-    if (studentError || !studentRecord) {
-      return NextResponse.json({ error: 'Student not found or access denied.' }, { status: 403 });
-    }
+  
 
     const filledDomains = [
       student.presentLevels.cognitive && 'Cognitive/Academic',
