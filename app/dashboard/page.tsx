@@ -49,83 +49,150 @@ export default function HomePage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      {/* ── Header ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">My Students</h2>
-          <p className="text-gray-500 mt-1">
+          <p className="text-gray-500 mt-0.5 text-sm">
             {students.length} student{students.length !== 1 ? 's' : ''} in your roster
             {hasFilters && filtered.length !== students.length && ` · ${filtered.length} shown`}
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <Link href="/archived" className="text-sm text-gray-500 hover:text-gray-800 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors">
+        <div className="flex items-center gap-2 flex-wrap">
+          <Link href="/archived" className="text-sm text-gray-500 hover:text-gray-800 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors whitespace-nowrap">
             📦 Archived
           </Link>
-          <Link href="/onboarding" className="text-sm text-gray-500 hover:text-gray-800 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors">
+          <Link href="/onboarding" className="text-sm text-gray-500 hover:text-gray-800 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors whitespace-nowrap">
             ❓ Help
           </Link>
-          <Link href="/students/new" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-5 rounded-lg flex items-center gap-2 transition-colors shadow-sm">
-            <span className="text-lg">+</span> Add Student
+          <Link href="/students/new" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 sm:px-5 rounded-lg flex items-center gap-1.5 transition-colors shadow-sm whitespace-nowrap text-sm">
+            <span className="text-base leading-none">+</span> Add Student
           </Link>
         </div>
       </div>
 
+      {/* ── Filters ── */}
       {students.length > 0 && (
-        <div className="flex flex-wrap gap-3 mb-6">
-          <input type="text" placeholder="🔍 Search by name, grade, or disability..." value={search} onChange={e => setSearch(e.target.value)}
-            className="flex-1 min-w-[220px] border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          <select value={filterGrade} onChange={e => setFilterGrade(e.target.value)} className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-            <option value="">All Grades</option>
-            {grades.map(g => <option key={g} value={g}>{g}</option>)}
-          </select>
-          <select value={filterCategory} onChange={e => setFilterCategory(e.target.value)} className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-            <option value="">All Categories</option>
-            {categories.map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
-          {hasFilters && <button onClick={() => { setSearch(''); setFilterGrade(''); setFilterCategory(''); }} className="text-sm text-gray-500 hover:text-gray-800 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors">✕ Clear</button>}
+        <div className="flex flex-col sm:flex-row gap-2 mb-6">
+          <input
+            type="text"
+            placeholder="🔍 Search by name, grade, or disability..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="w-full sm:flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <div className="flex gap-2">
+            <select value={filterGrade} onChange={e => setFilterGrade(e.target.value)}
+              className="flex-1 sm:flex-none border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+              <option value="">All Grades</option>
+              {grades.map(g => <option key={g} value={g}>{g}</option>)}
+            </select>
+            <select value={filterCategory} onChange={e => setFilterCategory(e.target.value)}
+              className="flex-1 sm:flex-none border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+              <option value="">All Categories</option>
+              {categories.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+            {hasFilters && (
+              <button
+                onClick={() => { setSearch(''); setFilterGrade(''); setFilterCategory(''); }}
+                className="text-sm text-gray-500 hover:text-gray-800 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors whitespace-nowrap">
+                ✕
+              </button>
+            )}
+          </div>
         </div>
       )}
 
+      {/* ── Empty state ── */}
       {students.length === 0 ? (
-        <div className="text-center py-20 bg-white rounded-xl border-2 border-dashed border-gray-200">
-          <div className="text-6xl mb-4">📚</div>
-          <h3 className="text-xl font-semibold text-gray-700">No students yet</h3>
-          <p className="text-gray-500 mt-2 max-w-sm mx-auto">Add a student to start generating customized, IDEA-compliant IEP plans.</p>
-          <div className="flex gap-3 justify-center mt-6 flex-wrap">
-            <Link href="/students/new" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded-lg transition-colors">Add First Student</Link>
-            <Link href="/onboarding" className="border border-gray-200 hover:bg-gray-50 text-gray-600 font-semibold py-2.5 px-6 rounded-lg transition-colors">How it works →</Link>
+        <div className="text-center py-16 sm:py-20 bg-white rounded-xl border-2 border-dashed border-gray-200">
+          <div className="text-5xl sm:text-6xl mb-4">📚</div>
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-700">No students yet</h3>
+          <p className="text-gray-500 mt-2 max-w-sm mx-auto text-sm sm:text-base px-4">
+            Add a student to start generating customized, IDEA-compliant IEP plans.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6 px-6 sm:px-0">
+            <Link href="/students/new" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded-lg transition-colors text-center">
+              Add First Student
+            </Link>
+            <Link href="/onboarding" className="border border-gray-200 hover:bg-gray-50 text-gray-600 font-semibold py-2.5 px-6 rounded-lg transition-colors text-center">
+              How it works →
+            </Link>
           </div>
         </div>
+
       ) : filtered.length === 0 ? (
         <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
           <div className="text-4xl mb-3">🔍</div>
           <h3 className="text-lg font-semibold text-gray-700">No students match your filters</h3>
-          <button onClick={() => { setSearch(''); setFilterGrade(''); setFilterCategory(''); }} className="mt-3 text-blue-600 hover:underline text-sm">Clear filters</button>
+          <button onClick={() => { setSearch(''); setFilterGrade(''); setFilterCategory(''); }}
+            className="mt-3 text-blue-600 hover:underline text-sm">
+            Clear filters
+          </button>
         </div>
+
       ) : (
         <div className="grid gap-3">
           {filtered.map(s => (
-            <div key={s.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 flex items-center justify-between hover:border-blue-300 hover:shadow-md transition-all">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-lg shrink-0">{initials(s.name)}</div>
-                <div>
-                  <h3 className="font-semibold text-gray-900 text-lg">{s.name}</h3>
-                  <div className="flex flex-wrap items-center gap-2 mt-0.5">
-                    <span className="text-sm text-gray-500">{s.grade}</span>
-                    <span className="text-gray-300">·</span>
-                    <span className="text-sm text-gray-500">Age {calculateAge(s.dateOfBirth)}</span>
-                    <span className="text-gray-300">·</span>
-                    <span className="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full font-medium">{s.disabilityCategory}</span>
-                    {(s.iepHistory?.length ?? 0) > 0 && <span className="text-xs bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full font-medium">{(s.iepHistory?.length ?? 0) + (s.generatedIEP ? 1 : 0)} versions</span>}
+            <div key={s.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-5 hover:border-blue-300 hover:shadow-md transition-all">
+
+              {/* Top row: avatar + info */}
+              <div className="flex items-start gap-3">
+                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-base sm:text-lg shrink-0">
+                  {initials(s.name)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-gray-900 text-base sm:text-lg leading-tight">{s.name}</h3>
+                  <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
+                    <span className="text-xs sm:text-sm text-gray-500">{s.grade}</span>
+                    <span className="text-gray-300 text-xs">·</span>
+                    <span className="text-xs sm:text-sm text-gray-500">Age {calculateAge(s.dateOfBirth)}</span>
+                    <span className="text-gray-300 text-xs hidden sm:inline">·</span>
+                    <span className="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full font-medium w-full sm:w-auto mt-0.5 sm:mt-0">
+                      {s.disabilityCategory}
+                    </span>
+                    {(s.iepHistory?.length ?? 0) > 0 && (
+                      <span className="text-xs bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full font-medium">
+                        {(s.iepHistory?.length ?? 0) + (s.generatedIEP ? 1 : 0)} versions
+                      </span>
+                    )}
                   </div>
-                  <p className="text-xs text-gray-400 mt-1">{s.generatedIEP ? `✅ IEP generated ${new Date(s.generatedIEP.generatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}` : '⏳ No IEP generated yet'}</p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    {s.generatedIEP
+                      ? `✅ IEP generated ${new Date(s.generatedIEP.generatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`
+                      : '⏳ No IEP generated yet'}
+                  </p>
+                </div>
+
+                {/* Desktop action buttons — hidden on mobile */}
+                <div className="hidden sm:flex items-center gap-2 shrink-0">
+                  <Link href={`/students/${s.id}/edit`}
+                    className="text-gray-500 hover:text-blue-600 hover:bg-blue-50 p-2 rounded-lg transition-colors text-sm"
+                    title="Edit student">✏️</Link>
+                  <Link href={`/students/${s.id}`}
+                    className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors whitespace-nowrap">
+                    {s.generatedIEP ? 'View IEP' : 'Generate IEP'}
+                  </Link>
+                  <button onClick={() => handleArchive(s.id, s.name)}
+                    className="text-gray-400 hover:text-amber-600 hover:bg-amber-50 p-2 rounded-lg transition-colors"
+                    title="Archive student">📦</button>
                 </div>
               </div>
-              <div className="flex items-center gap-2 shrink-0">
-                <Link href={`/students/${s.id}/edit`} className="text-gray-500 hover:text-blue-600 hover:bg-blue-50 p-2 rounded-lg transition-colors text-sm" title="Edit student">✏️</Link>
-                <Link href={`/students/${s.id}`} className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">{s.generatedIEP ? 'View IEP' : 'Generate IEP'}</Link>
-                <button onClick={() => handleArchive(s.id, s.name)} className="text-gray-400 hover:text-amber-600 hover:bg-amber-50 p-2 rounded-lg transition-colors" title="Archive student">📦</button>
+
+              {/* Mobile action buttons — shown only on mobile */}
+              <div className="flex sm:hidden items-center gap-2 mt-3 pt-3 border-t border-gray-100">
+                <Link href={`/students/${s.id}`}
+                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 rounded-lg transition-colors text-center">
+                  {s.generatedIEP ? 'View IEP' : 'Generate IEP'}
+                </Link>
+                <Link href={`/students/${s.id}/edit`}
+                  className="text-gray-500 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-lg transition-colors text-sm border border-gray-200"
+                  title="Edit student">✏️ Edit</Link>
+                <button onClick={() => handleArchive(s.id, s.name)}
+                  className="text-gray-400 hover:text-amber-600 hover:bg-amber-50 px-3 py-2 rounded-lg transition-colors border border-gray-200 text-sm"
+                  title="Archive">📦</button>
               </div>
+
             </div>
           ))}
         </div>
