@@ -34,84 +34,56 @@ export default function NavBar() {
     : displayName.split('@')[0];
 
   return (
-    <nav style={{ background: '#1a1a2e', boxShadow: '0 2px 8px rgba(0,0,0,0.2)' }} className="no-print">
-      <div style={{
-        maxWidth: '1152px', margin: '0 auto',
-        padding: '0 16px',
-        height: '56px',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      }}>
+    <nav className="no-print bg-[#1a1a2e] shadow-md">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-3">
 
         {/* Logo */}
         <Link
           href={user ? '/dashboard' : '/landing'}
-          style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}
+          className="flex items-center gap-2 shrink-0 no-underline"
+          style={{ textDecoration: 'none' }}
         >
-          <span style={{ fontSize: '22px', lineHeight: 1 }}>💡</span>
-          <span style={{ fontFamily: 'Georgia, serif', fontSize: '18px', fontWeight: 700, color: '#f8f7f4' }}>
-            SmartIEP<span style={{ color: '#f5c842' }}>.co</span>
+          <span className="text-xl leading-none">💡</span>
+          <span
+            className="text-lg font-bold text-[#f8f7f4]"
+            style={{ fontFamily: 'Georgia, serif' }}
+          >
+            SmartIEP<span className="text-[#f5c842]">.co</span>
           </span>
         </Link>
 
+        {/* Right side */}
         {user && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
 
-            {/* Add Student — desktop only */}
+            {/* Add Student — hidden on mobile */}
             <Link
               href="/students/new"
-              style={{
-                fontSize: '14px', fontWeight: 600, background: 'white', color: '#1a1a2e',
-                padding: '7px 16px', borderRadius: '100px', textDecoration: 'none', whiteSpace: 'nowrap',
-              }}
-              className="nav-add-desktop"
+              className="hidden sm:inline-flex items-center text-sm font-semibold bg-white text-[#1a1a2e] px-4 py-2 rounded-full no-underline whitespace-nowrap"
+              style={{ textDecoration: 'none' }}
             >
               + Add Student
             </Link>
 
-            {/* User info — desktop only */}
-            <div
-              style={{
-                borderLeft: '1px solid rgba(255,255,255,0.15)',
-                paddingLeft: '10px',
-                display: 'flex', alignItems: 'center', gap: '10px',
-              }}
-              className="nav-userinfo-desktop"
-            >
-              <div style={{ textAlign: 'right' }}>
-                <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', margin: 0 }}>Signed in as</p>
-                <p style={{
-                  fontSize: '12px', fontWeight: 500, color: 'rgba(255,255,255,0.8)',
-                  margin: 0, maxWidth: '140px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                }}>
-                  {shortName}
-                </p>
+            {/* User info — hidden on mobile */}
+            <div className="hidden sm:flex items-center gap-2 border-l border-white/20 pl-3">
+              <div className="text-right">
+                <p className="text-[11px] text-white/40 m-0 leading-none">Signed in as</p>
+                <p className="text-xs font-medium text-white/80 m-0 max-w-[120px] truncate">{shortName}</p>
               </div>
             </div>
 
             {/* Sign Out — always visible */}
             <button
               onClick={handleSignOut}
-              style={{
-                fontSize: '13px', background: 'rgba(255,255,255,0.08)',
-                color: 'rgba(255,255,255,0.7)', border: '1px solid rgba(255,255,255,0.15)',
-                padding: '7px 14px', borderRadius: '6px', cursor: 'pointer', whiteSpace: 'nowrap',
-              }}
+              className="text-xs sm:text-sm text-white/70 border border-white/20 bg-white/10 px-3 py-1.5 rounded-md cursor-pointer whitespace-nowrap"
             >
               Sign Out
             </button>
+
           </div>
         )}
       </div>
-
-      {/* Responsive overrides */}
-      <style>{`
-        .nav-add-desktop { display: inline-flex !important; }
-        .nav-userinfo-desktop { display: flex !important; }
-        @media (max-width: 600px) {
-          .nav-add-desktop { display: none !important; }
-          .nav-userinfo-desktop { display: none !important; }
-        }
-      `}</style>
     </nav>
   );
 }

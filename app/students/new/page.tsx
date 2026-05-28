@@ -165,7 +165,7 @@ export default function NewStudentPage() {
           <div className="space-y-5">
             <h3 className="text-lg font-semibold text-gray-800 border-b pb-3">Student Information</h3>
             <Input label="Student's Full Name" required placeholder="First Last" value={form.name} onChange={e => set('name', e.target.value)} />
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input label="Date of Birth" type="date" required value={form.dateOfBirth} onChange={e => set('dateOfBirth', e.target.value)} />
               <Select label="Grade / Education Level" required value={form.grade} onChange={e => set('grade', e.target.value)}>
                 <option value="">Select grade...</option>
@@ -176,7 +176,7 @@ export default function NewStudentPage() {
               <option value="">Select disability category...</option>
               {DISABILITY_CATEGORIES.map(d => <option key={d} value={d}>{d}</option>)}
             </Select>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input label="IEP Meeting Date" type="date" value={form.meetingDate} onChange={e => set('meetingDate', e.target.value)} />
               <Input label="Annual Review Date" type="date" value={form.reviewDate} onChange={e => set('reviewDate', e.target.value)} />
             </div>
@@ -184,7 +184,7 @@ export default function NewStudentPage() {
               <h4 className="text-sm font-semibold text-gray-700 mb-4">Parent / Guardian Information <span className="text-gray-400 font-normal">(optional)</span></h4>
               <div className="space-y-4">
                 <Input label="Parent / Guardian Name" placeholder="Full name" value={form.parentName} onChange={e => set('parentName', e.target.value)} />
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Input label="Email Address" type="email" placeholder="email@example.com" value={form.parentEmail} onChange={e => set('parentEmail', e.target.value)} />
                   <Input label="Phone Number" type="tel" placeholder="(555) 000-0000" value={form.parentPhone} onChange={e => set('parentPhone', e.target.value)} />
                 </div>
@@ -225,7 +225,7 @@ export default function NewStudentPage() {
         {step === 4 && (
           <div className="space-y-5">
             <h3 className="text-lg font-semibold text-gray-800 border-b pb-3">Review & Generate IEP</h3>
-            <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
               <div className="bg-gray-50 rounded-lg p-4">
                 <p className="font-semibold text-gray-700 mb-2">Student</p>
                 <p className="text-gray-900 font-medium">{form.name}</p>
