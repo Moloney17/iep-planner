@@ -21,23 +21,28 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  const { data: { user } } = await supabase.auth.getUser();
+  // Use getSession() instead of getUser() — reads from cookie, no network call
+  const { data: { session } } = await supabase.auth.getSession();
+  const user = session?.user ?? null;
 
   const path = request.nextUrl.pathname;
   const isAuthPage = path.startsWith('/auth');
-  const isApiRoute = path.startsWith('/api');
-  const isLanding = path === "/landing" || path === "/";
-  const isLegal = path.startsWith("/legal");
-  const isDashboardArea = path.startsWith("/dashboard") || path.startsWith("/students") || path.startsWith("/onboarding") || path.startsWith("/archived") || path.startsWith("/admin");
-  const isPublic = isAuthPage || isApiRoute || isLanding || isLegal || isDashboardArea;
+  const isLanding = path === '/landing' || path === '/';
+  const isLegal = path.startsWith('/legal');
+  const isDashboardArea =
+    path.startsWith('/dashboard') ||
+    path.startsWith('/students') ||
+    path.startsWith('/onboarding') ||
+    path.startsWith('/archived') ||
+    path.startsWith('/admin');
 
-  // Unauthenticated users: allow landing + auth pages, redirect everything else to landing
-  if (!user && !isPublic) {
+  // Unauthenticated: redirect protected pages to landing
+  if (!user && isDashboardArea) {
     return NextResponse.redirect(new URL('/landing', request.url));
   }
 
-  // Authenticated users: redirect away from auth pages and landing to dashboard
-  if (user && (isAuthPage || isLanding) && !isDashboardArea) {
+  // Authenticated: redirect away from auth/landing to dashboard
+  if (user && (isAuthPage || isLanding)) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
@@ -45,5 +50,8 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
+  // Only run middleware on actual page routes — skip static files, api routes, images
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|api/).*)',
+  ],
 };
