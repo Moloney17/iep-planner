@@ -1,18 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 
+// Force this route to always run fresh — never cached, never marked "public".
+// Without this, Next.js may mark the response as cacheable, which causes
+// Vercel/Cloudflare's edge layer to strip the Set-Cookie header entirely
+// to avoid leaking one user's session into a shared cache.
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get('code');
   const next = searchParams.get('next') ?? '/dashboard';
 
   if (code) {
-    // Create the response ONCE and only ever attach cookies to this same
-    // object. Recreating the response inside setAll (as a previous version
-    // of this file did) silently drops cookies whenever setAll is called
-    // more than once during the exchange — which it is: once to clear the
-    // temporary PKCE verifier cookie, and again to set the real session.
     const response = NextResponse.redirect(`${origin}${next}`);
+    response.headers.set('Cache-Control', 'no-store, max-age=0');
 
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
