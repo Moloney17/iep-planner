@@ -7,11 +7,12 @@ export async function GET(request: NextRequest) {
   const next = searchParams.get('next') ?? '/dashboard';
 
   if (code) {
-    // Build the redirect response FIRST, then attach cookies directly to it.
-    // This matches the pattern used in middleware.ts and avoids inconsistencies
-    // that can occur when mixing next/headers cookies() with a separately
-    // constructed NextResponse (a known issue with chunked auth cookies).
-    let response = NextResponse.redirect(`${origin}${next}`);
+    // Create the response ONCE and only ever attach cookies to this same
+    // object. Recreating the response inside setAll (as a previous version
+    // of this file did) silently drops cookies whenever setAll is called
+    // more than once during the exchange — which it is: once to clear the
+    // temporary PKCE verifier cookie, and again to set the real session.
+    const response = NextResponse.redirect(`${origin}${next}`);
 
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -22,8 +23,6 @@ export async function GET(request: NextRequest) {
             return request.cookies.getAll();
           },
           setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
-            cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
-            response = NextResponse.redirect(`${origin}${next}`);
             cookiesToSet.forEach(({ name, value, options }) =>
               response.cookies.set(name, value, options)
             );
