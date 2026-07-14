@@ -5,6 +5,8 @@ import { cookies } from 'next/headers';
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get('code');
+  // Optional: where to send the user after login (defaults to dashboard)
+  const next = searchParams.get('next') ?? '/dashboard';
 
   if (code) {
     const cookieStore = await cookies();
@@ -20,8 +22,17 @@ export async function GET(request: NextRequest) {
         },
       }
     );
-    await supabase.auth.exchangeCodeForSession(code);
+
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+
+    if (!error) {
+      return NextResponse.redirect(`${origin}${next}`);
+    }
+
+    console.error('OAuth callback error:', error);
+    return NextResponse.redirect(`${origin}/auth/login?error=oauth_failed`);
   }
 
-  return NextResponse.redirect(`${origin}/`);
+  // No code present — something went wrong upstream
+  return NextResponse.redirect(`${origin}/auth/login?error=oauth_failed`);
 }

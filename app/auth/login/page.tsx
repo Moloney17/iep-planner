@@ -4,11 +4,13 @@ import { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase';
+import GoogleSignInButton from '@/components/GoogleSignInButton';
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const timedOut = searchParams.get('reason') === 'timeout';
+  const oauthFailed = searchParams.get('error') === 'oauth_failed';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -55,6 +57,20 @@ function LoginForm() {
               </div>
             </div>
           )}
+
+          {oauthFailed && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-700 mb-5">
+              Google sign-in didn&apos;t go through. Please try again, or sign in with your email and password below.
+            </div>
+          )}
+
+          <GoogleSignInButton />
+
+          <div className="flex items-center gap-3 my-6">
+            <div className="flex-1 h-px bg-gray-200" />
+            <span className="text-xs text-gray-400 font-medium">OR</span>
+            <div className="flex-1 h-px bg-gray-200" />
+          </div>
 
           <form onSubmit={handleLogin} className="space-y-5">
             {error && (
