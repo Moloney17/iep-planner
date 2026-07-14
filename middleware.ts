@@ -3,10 +3,13 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
-  // Check for Supabase auth cookie directly — no network call needed
+  // Check for Supabase auth cookie directly — no network call needed.
+  // Use includes() rather than endsWith() because larger sessions (e.g. Google OAuth,
+  // which carries provider tokens) get chunked into cookies like
+  // "sb-xxx-auth-token.0", "sb-xxx-auth-token.1" rather than one single cookie.
   const cookies = request.cookies.getAll();
   const isLoggedIn = cookies.some(c =>
-    c.name.startsWith('sb-') && c.name.endsWith('-auth-token')
+    c.name.startsWith('sb-') && c.name.includes('-auth-token')
   );
 
   const isAuthPage = path.startsWith('/auth');
