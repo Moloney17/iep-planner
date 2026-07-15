@@ -4,9 +4,7 @@ export async function POST(request: NextRequest) {
   try {
     const { name, email } = await request.json();
     if (!email) return NextResponse.json({ error: 'Missing email' }, { status: 400 });
-
     const RESEND_API_KEY = process.env.RESEND_API_KEY;
-
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -14,8 +12,8 @@ export async function POST(request: NextRequest) {
         'Authorization': `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'SmartIEP <onboarding@resend.dev>',
-        to: 'moloney.conor@gmail.com',
+        from: 'SmartIEP <admin@smartiep.co>',
+        to: 'admin@smartiep.co',
         subject: '🎉 New SmartIEP signup',
         html: `
           <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 32px;">
@@ -36,13 +34,11 @@ export async function POST(request: NextRequest) {
         `,
       }),
     });
-
     if (!res.ok) {
       const err = await res.text();
       console.error('Resend error:', err);
       return NextResponse.json({ error: err }, { status: 500 });
     }
-
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Notify signup error:', error);
