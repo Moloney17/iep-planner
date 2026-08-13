@@ -61,9 +61,12 @@ function studentToRow(student: Student, userId: string) {
 
 export async function getStudents(): Promise<Student[]> {
   const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return [];
   const { data, error } = await supabase
     .from('students')
     .select('*')
+    .eq('user_id', user.id)
     .or('archived.is.null,archived.eq.false')
     .order('created_at', { ascending: false });
   if (error) { console.error('getStudents error:', error); return []; }
@@ -72,10 +75,13 @@ export async function getStudents(): Promise<Student[]> {
 
 export async function getStudent(id: string): Promise<Student | null> {
   const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return null;
   const { data, error } = await supabase
     .from('students')
     .select('*')
     .eq('id', id)
+    .eq('user_id', user.id)
     .single();
   if (error) { console.error('getStudent error:', error); return null; }
   return data ? rowToStudent(data) : null;
@@ -95,37 +101,49 @@ export async function saveStudent(student: Student): Promise<void> {
 
 export async function deleteStudent(id: string): Promise<void> {
   const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Not authenticated');
   const { error } = await supabase
     .from('students')
     .delete()
-    .eq('id', id);
+    .eq('id', id)
+    .eq('user_id', user.id);
   if (error) { console.error('deleteStudent error:', error); throw error; }
 }
 
 
 export async function archiveStudent(id: string): Promise<void> {
   const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Not authenticated');
   const { error } = await supabase
     .from('students')
     .update({ archived: true, archived_at: new Date().toISOString(), updated_at: new Date().toISOString() })
-    .eq('id', id);
+    .eq('id', id)
+    .eq('user_id', user.id);
   if (error) { console.error('archiveStudent error:', error); throw error; }
 }
 
 export async function unarchiveStudent(id: string): Promise<void> {
   const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Not authenticated');
   const { error } = await supabase
     .from('students')
     .update({ archived: false, archived_at: null, updated_at: new Date().toISOString() })
-    .eq('id', id);
+    .eq('id', id)
+    .eq('user_id', user.id);
   if (error) { console.error('unarchiveStudent error:', error); throw error; }
 }
 
 export async function getArchivedStudents(): Promise<Student[]> {
   const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return [];
   const { data, error } = await supabase
     .from('students')
     .select('*')
+    .eq('user_id', user.id)
     .eq('archived', true)
     .order('archived_at', { ascending: false });
   if (error) { console.error('getArchivedStudents error:', error); return []; }
@@ -136,10 +154,13 @@ export async function getArchivedStudents(): Promise<Student[]> {
 // ── Progress Notes ──────────────────────────────────────────
 export async function getProgressNotes(studentId: string): Promise<import('./types').ProgressNote[]> {
   const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return [];
   const { data, error } = await supabase
     .from('progress_notes')
     .select('*')
     .eq('student_id', studentId)
+    .eq('user_id', user.id)
     .order('date', { ascending: false });
   if (error) { console.error('getProgressNotes error:', error); return []; }
   return (data || []).map((row: Record<string, unknown>) => ({
@@ -174,7 +195,9 @@ export async function saveProgressNote(note: Omit<import('./types').ProgressNote
 
 export async function deleteProgressNote(id: string): Promise<void> {
   const supabase = createClient();
-  const { error } = await supabase.from('progress_notes').delete().eq('id', id);
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Not authenticated');
+  const { error } = await supabase.from('progress_notes').delete().eq('id', id).eq('user_id', user.id);
   if (error) { console.error('deleteProgressNote error:', error); throw error; }
 }
 

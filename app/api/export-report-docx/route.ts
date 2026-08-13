@@ -171,6 +171,16 @@ export async function POST(request: NextRequest) {
 
     const { student, report }: { student: Student; report: ProgressReport } = await request.json();
 
+    // Verify student belongs to requesting user
+    const { data: studentRecord, error: studentError } = await supabase
+      .from('students')
+      .select('id, user_id')
+      .eq('id', student.id)
+      .single();
+    if (studentError || !studentRecord || studentRecord.user_id !== user.id) {
+      return NextResponse.json({ error: 'Student not found or access denied.' }, { status: 403 });
+    }
+
     const doc = buildReportDocx(student, report);
     const buffer = await Packer.toBuffer(doc);
     const filename = `ProgressReport_${student.name.replace(/\s+/g, '_')}_${report.reportingPeriod.replace(/[^a-z0-9]/gi, '_')}.docx`;

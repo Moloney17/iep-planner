@@ -10,7 +10,13 @@ function formatDate(d: string) {
 
 function csvEscape(val: unknown): string {
   if (val === null || val === undefined) return '';
-  const str = String(val);
+  let str = String(val);
+  // Neutralize CSV/formula injection: if a value starts with a character a
+  // spreadsheet app would interpret as a formula trigger, prefix it with a
+  // single quote so it's read back as plain text instead of executed.
+  if (/^[=+\-@\t\r]/.test(str)) {
+    str = `'${str}`;
+  }
   if (str.includes(',') || str.includes('"') || str.includes('\n')) {
     return `"${str.replace(/"/g, '""')}"`;
   }
@@ -351,10 +357,10 @@ export async function POST(request: NextRequest) {
     // Verify student belongs to requesting user
     const { data: studentRecord, error: studentError } = await supabase
       .from('students')
-      .select('id')
+      .select('id, user_id')
       .eq('id', student.id)
       .single();
-    if (studentError || !studentRecord) {
+    if (studentError || !studentRecord || studentRecord.user_id !== user.id) {
       return NextResponse.json({ error: 'Student not found or access denied.' }, { status: 403 });
     }
 

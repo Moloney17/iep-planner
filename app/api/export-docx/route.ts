@@ -233,6 +233,16 @@ export async function POST(request: NextRequest) {
 
     const { student, iep }: { student: Student; iep: GeneratedIEP } = await request.json();
 
+    // Verify student belongs to requesting user
+    const { data: studentRecord, error: studentError } = await supabase
+      .from('students')
+      .select('id, user_id')
+      .eq('id', student.id)
+      .single();
+    if (studentError || !studentRecord || studentRecord.user_id !== user.id) {
+      return NextResponse.json({ error: 'Student not found or access denied.' }, { status: 403 });
+    }
+
     const doc = buildDocx(student, iep);
     const buffer = await Packer.toBuffer(doc);
     const filename = `IEP_${student.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.docx`;

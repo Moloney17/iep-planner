@@ -7,8 +7,52 @@ import { cookies } from 'next/headers';
 export const maxDuration = 120;
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
+// --- Rate limiting (same pattern as generate-iep; Opus is the priciest
+// model in this app, so this route needs a limiter at least as strict) ---
+const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
+const minuteStore = new Map<string, { count: number; resetAt: number }>();
+const DAILY_LIMIT = 5;
+const MINUTE_LIMIT = 3;
+
+function checkDailyLimit(userId: string): boolean {
+  const now = Date.now();
+  const midnight = new Date();
+  midnight.setHours(24, 0, 0, 0);
+  const entry = rateLimitStore.get(userId);
+  if (!entry || now > entry.resetAt) {
+    rateLimitStore.set(userId, { count: 1, resetAt: midnight.getTime() });
+    return true;
+  }
+  if (entry.count >= DAILY_LIMIT) return false;
+  entry.count++;
+  return true;
+}
+
+function checkMinuteLimit(ip: string): boolean {
+  const now = Date.now();
+  const entry = minuteStore.get(ip);
+  if (!entry || now > entry.resetAt) {
+    minuteStore.set(ip, { count: 1, resetAt: now + 60_000 });
+    return true;
+  }
+  if (entry.count >= MINUTE_LIMIT) return false;
+  entry.count++;
+  return true;
+}
+
+setInterval(() => {
+  const now = Date.now();
+  rateLimitStore.forEach((v, k) => { if (now > v.resetAt) rateLimitStore.delete(k); });
+  minuteStore.forEach((v, k) => { if (now > v.resetAt) minuteStore.delete(k); });
+}, 3_600_000);
+
 export async function POST(request: NextRequest) {
   try {
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+    if (!checkMinuteLimit(ip)) {
+      return NextResponse.json({ error: 'Too many requests. Please wait a moment before trying again.' }, { status: 429 });
+    }
+
     const cookieStore = await cookies();
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -25,6 +69,13 @@ export async function POST(request: NextRequest) {
 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    if (!checkDailyLimit(user.id)) {
+      return NextResponse.json(
+        { error: `You've reached your daily limit of ${DAILY_LIMIT} progress report generations. Your limit resets at midnight.` },
+        { status: 429 }
+      );
+    }
 
     const { student, notes, reportingPeriod }: { student: Student; notes: ProgressNote[]; reportingPeriod: string } = await request.json();
 

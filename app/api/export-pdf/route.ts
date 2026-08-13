@@ -115,10 +115,10 @@ export async function POST(request: NextRequest) {
     // Verify student belongs to requesting user
     const { data: studentRecord, error: studentError } = await supabase
       .from('students')
-      .select('id')
+      .select('id, user_id')
       .eq('id', student.id)
       .single();
-    if (studentError || !studentRecord) {
+    if (studentError || !studentRecord || studentRecord.user_id !== user.id) {
       return NextResponse.json({ error: 'Student not found or access denied.' }, { status: 403 });
     }
 
