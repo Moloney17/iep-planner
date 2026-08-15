@@ -4,34 +4,22 @@ import { cookies } from 'next/headers';
 import { Student, ProgressReport } from '@/lib/types';
 import {
   Document, Packer, Paragraph, TextRun, AlignmentType,
-  BorderStyle, WidthType, LevelFormat, PageNumber, Footer,
-  HeadingLevel,
+  BorderStyle,
 } from 'docx';
+import {
+  DOCX_BLUE, DOCX_GRAY, formatDocxDate, DOCX_PAGE_PROPERTIES,
+  makeHeadingBuilder, makeBodyBuilder, docxParagraphStyles, docxNumberingConfig, buildDocxFooter,
+} from '@/lib/docx-helpers';
 
 export const maxDuration = 30;
 
-function formatDate(d: string): string {
-  if (!d) return 'N/A';
-  try { return new Date(d).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }); }
-  catch { return d; }
-}
-
 function buildReportDocx(student: Student, report: ProgressReport): Document {
-  const BLUE = '1a3a6b';
+  const BLUE = DOCX_BLUE;
   const PURPLE = '6b21a8';
-  const GRAY = '666666';
+  const GRAY = DOCX_GRAY;
 
-  const heading = (text: string, level: (typeof HeadingLevel)[keyof typeof HeadingLevel] = HeadingLevel.HEADING_1) => new Paragraph({
-    heading: level,
-    spacing: { before: 280, after: 120 },
-    border: level === HeadingLevel.HEADING_1 ? { bottom: { style: BorderStyle.SINGLE, size: 6, color: BLUE, space: 4 } } : {},
-    children: [new TextRun({ text, font: 'Arial', bold: true, size: level === HeadingLevel.HEADING_1 ? 26 : 22, color: BLUE })],
-  });
-
-  const body = (text: string, spacing = 140) => new Paragraph({
-    spacing: { after: spacing },
-    children: [new TextRun({ text, font: 'Arial', size: 22 })],
-  });
+  const heading = makeHeadingBuilder({ h1: 26, h2: 22 });
+  const body = makeBodyBuilder(140);
 
   const label = (text: string) => new Paragraph({
     spacing: { after: 40 },
@@ -58,7 +46,7 @@ function buildReportDocx(student: Student, report: ProgressReport): Document {
     new Paragraph({
       alignment: AlignmentType.CENTER,
       spacing: { after: 200 },
-      children: [new TextRun({ text: `Generated: ${formatDate(report.generatedAt)}`, font: 'Arial', size: 18, italics: true, color: GRAY })],
+      children: [new TextRun({ text: `Generated: ${formatDocxDate(report.generatedAt)}`, font: 'Arial', size: 18, italics: true, color: GRAY })],
     }),
 
     // Disclaimer
@@ -118,33 +106,14 @@ function buildReportDocx(student: Student, report: ProgressReport): Document {
   ];
 
   return new Document({
-    numbering: {
-      config: [
-        { reference: 'bullets', levels: [{ level: 0, format: LevelFormat.BULLET, text: '•', alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 720, hanging: 360 } } } }] },
-      ],
-    },
+    numbering: { config: docxNumberingConfig(false) },
     styles: {
       default: { document: { run: { font: 'Arial', size: 22 } } },
-      paragraphStyles: [
-        { id: 'Heading1', name: 'Heading 1', basedOn: 'Normal', next: 'Normal', quickFormat: true, run: { size: 26, bold: true, font: 'Arial', color: BLUE }, paragraph: { spacing: { before: 280, after: 120 }, outlineLevel: 0 } },
-        { id: 'Heading2', name: 'Heading 2', basedOn: 'Normal', next: 'Normal', quickFormat: true, run: { size: 22, bold: true, font: 'Arial', color: BLUE }, paragraph: { spacing: { before: 200, after: 100 }, outlineLevel: 1 } },
-      ],
+      paragraphStyles: docxParagraphStyles({ h1: 26, h2: 22 }),
     },
     sections: [{
-      properties: { page: { size: { width: 12240, height: 15840 }, margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 } } },
-      footers: {
-        default: new Footer({
-          children: [new Paragraph({
-            alignment: AlignmentType.CENTER,
-            children: [
-              new TextRun({ text: `${student.name} | Progress Report — ${report.reportingPeriod} | Page `, font: 'Arial', size: 18, color: GRAY }),
-              new TextRun({ children: [PageNumber.CURRENT], font: 'Arial', size: 18, color: GRAY }),
-              new TextRun({ text: ' of ', font: 'Arial', size: 18, color: GRAY }),
-              new TextRun({ children: [PageNumber.TOTAL_PAGES], font: 'Arial', size: 18, color: GRAY }),
-            ],
-          })],
-        }),
-      },
+      properties: DOCX_PAGE_PROPERTIES,
+      footers: { default: buildDocxFooter(`${student.name} | Progress Report — ${report.reportingPeriod}`) },
       children,
     }],
   });

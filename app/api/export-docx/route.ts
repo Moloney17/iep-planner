@@ -4,35 +4,23 @@ import { cookies } from 'next/headers';
 import { Student, GeneratedIEP } from '@/lib/types';
 import {
   Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
-  HeadingLevel, AlignmentType, BorderStyle, WidthType, ShadingType,
-  LevelFormat, PageNumber, Footer,
+  AlignmentType, BorderStyle, WidthType, ShadingType,
 } from 'docx';
+import {
+  DOCX_BLUE, DOCX_GRAY, formatDocxDate, DOCX_PAGE_PROPERTIES,
+  makeHeadingBuilder, makeBodyBuilder, docxParagraphStyles, docxNumberingConfig, buildDocxFooter,
+} from '@/lib/docx-helpers';
 
 export const maxDuration = 30;
 
-function formatDate(d: string): string {
-  if (!d) return 'N/A';
-  try { return new Date(d).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }); }
-  catch { return d; }
-}
-
 function buildDocx(student: Student, iep: GeneratedIEP): Document {
-  const BLUE = '1a3a6b';
-  const GRAY = '666666';
+  const BLUE = DOCX_BLUE;
+  const GRAY = DOCX_GRAY;
   const border = { style: BorderStyle.SINGLE, size: 1, color: 'CCCCCC' };
   const borders = { top: border, bottom: border, left: border, right: border };
 
-  const heading = (text: string, level: (typeof HeadingLevel)[keyof typeof HeadingLevel] = HeadingLevel.HEADING_1) => new Paragraph({
-    heading: level,
-    spacing: { before: 280, after: 120 },
-    border: level === HeadingLevel.HEADING_1 ? { bottom: { style: BorderStyle.SINGLE, size: 6, color: BLUE, space: 4 } } : {},
-    children: [new TextRun({ text, font: 'Arial', bold: true, size: level === HeadingLevel.HEADING_1 ? 28 : 24, color: BLUE })],
-  });
-
-  const body = (text: string, spacing = 160) => new Paragraph({
-    spacing: { after: spacing },
-    children: [new TextRun({ text, font: 'Arial', size: 22 })],
-  });
+  const heading = makeHeadingBuilder({ h1: 28, h2: 24 });
+  const body = makeBodyBuilder(160);
 
   const infoCell = (labelText: string, value: string, width = 4680) => new TableCell({
     borders,
@@ -61,9 +49,9 @@ function buildDocx(student: Student, iep: GeneratedIEP): Document {
     width: { size: 9360, type: WidthType.DXA },
     columnWidths: [4680, 4680],
     rows: [
-      new TableRow({ children: [infoCell('Student Name', student.name), infoCell('Date of Birth', formatDate(student.dateOfBirth))] }),
+      new TableRow({ children: [infoCell('Student Name', student.name), infoCell('Date of Birth', formatDocxDate(student.dateOfBirth))] }),
       new TableRow({ children: [infoCell('Grade / Level', student.grade), infoCell('Disability Category', student.disabilityCategory)] }),
-      new TableRow({ children: [infoCell('IEP Meeting Date', formatDate(student.meetingDate)), infoCell('Annual Review Date', formatDate(student.reviewDate))] }),
+      new TableRow({ children: [infoCell('IEP Meeting Date', formatDocxDate(student.meetingDate)), infoCell('Annual Review Date', formatDocxDate(student.reviewDate))] }),
       new TableRow({ children: [infoCell('Parent / Guardian', student.parentName || ''), infoCell('Contact', student.parentPhone || '')] }),
     ],
   });
@@ -114,7 +102,7 @@ function buildDocx(student: Student, iep: GeneratedIEP): Document {
   const children = [
     new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 80 }, children: [new TextRun({ text: 'Individualized Education Program (IEP)', font: 'Arial', size: 36, bold: true, color: BLUE })] }),
     new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 40 }, children: [new TextRun({ text: `${student.name} · ${student.grade} · ${student.disabilityCategory}`, font: 'Arial', size: 22, color: GRAY })] }),
-    new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 200 }, children: [new TextRun({ text: `Generated: ${formatDate(iep.generatedAt)}`, font: 'Arial', size: 18, italics: true, color: GRAY })] }),
+    new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 200 }, children: [new TextRun({ text: `Generated: ${formatDocxDate(iep.generatedAt)}`, font: 'Arial', size: 18, italics: true, color: GRAY })] }),
     new Paragraph({
       spacing: { after: 240 },
       border: { left: { style: BorderStyle.SINGLE, size: 16, color: 'f0a500', space: 8 } },
@@ -179,34 +167,14 @@ function buildDocx(student: Student, iep: GeneratedIEP): Document {
   ];
 
   return new Document({
-    numbering: {
-      config: [
-        { reference: 'bullets', levels: [{ level: 0, format: LevelFormat.BULLET, text: '•', alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 720, hanging: 360 } } } }] },
-        { reference: 'numbers', levels: [{ level: 0, format: LevelFormat.DECIMAL, text: '%1.', alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 720, hanging: 360 } } } }] },
-      ],
-    },
+    numbering: { config: docxNumberingConfig(true) },
     styles: {
       default: { document: { run: { font: 'Arial', size: 22 } } },
-      paragraphStyles: [
-        { id: 'Heading1', name: 'Heading 1', basedOn: 'Normal', next: 'Normal', quickFormat: true, run: { size: 28, bold: true, font: 'Arial', color: BLUE }, paragraph: { spacing: { before: 280, after: 120 }, outlineLevel: 0 } },
-        { id: 'Heading2', name: 'Heading 2', basedOn: 'Normal', next: 'Normal', quickFormat: true, run: { size: 24, bold: true, font: 'Arial', color: BLUE }, paragraph: { spacing: { before: 200, after: 100 }, outlineLevel: 1 } },
-      ],
+      paragraphStyles: docxParagraphStyles({ h1: 28, h2: 24 }),
     },
     sections: [{
-      properties: { page: { size: { width: 12240, height: 15840 }, margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 } } },
-      footers: {
-        default: new Footer({
-          children: [new Paragraph({
-            alignment: AlignmentType.CENTER,
-            children: [
-              new TextRun({ text: `${student.name} | IEP | Generated ${formatDate(iep.generatedAt)} | Page `, font: 'Arial', size: 18, color: GRAY }),
-              new TextRun({ children: [PageNumber.CURRENT], font: 'Arial', size: 18, color: GRAY }),
-              new TextRun({ text: ' of ', font: 'Arial', size: 18, color: GRAY }),
-              new TextRun({ children: [PageNumber.TOTAL_PAGES], font: 'Arial', size: 18, color: GRAY }),
-            ],
-          })],
-        }),
-      },
+      properties: DOCX_PAGE_PROPERTIES,
+      footers: { default: buildDocxFooter(`${student.name} | IEP | Generated ${formatDocxDate(iep.generatedAt)}`) },
       children,
     }],
   });
